@@ -125,12 +125,13 @@ which `test/setup.ts` relies on by leaving those env vars blank.
 
 ## Manual checklist (things only you can do)
 
-- [ ] **Verify the Brevo sender.** `techcluesltd@gmail.com` was added as a Brevo sender during setup
-      (id `3`) but Brevo requires clicking a verification link sent to that inbox before it will
-      actually send mail from that address. Until verified, every email this API sends (enquiry
-      notifications, auto-replies, booking confirmations, admin replies) will fail. For production
-      deliverability, verify a real domain (SPF/DKIM) in Brevo rather than relying on a Gmail address
-      — Gmail addresses are routinely rejected or spam-filtered as a sending domain.
+- [ ] **Verify the Brevo sender (recommended, not currently blocking).** `techcluesltd@gmail.com`
+      was added as a Brevo sender during setup (id `3`). It shows as unverified in the Brevo
+      dashboard, but a direct API test confirmed Brevo still accepts and queues sends from it today
+      (unverified only blocks some campaign features, not transactional API sends, on this account).
+      Click the verification link sent to that inbox anyway — and for real production deliverability,
+      verify a proper domain with SPF/DKIM rather than relying on a Gmail address long-term, since
+      Gmail-as-sender is routinely spam-filtered by other providers at scale.
 - [ ] **MongoDB Atlas Network Access.** Add `0.0.0.0/0` to Network Access (Vercel's outbound IPs are
       dynamic and not listable), or use Atlas's Vercel integration if available on your plan.
 - [ ] **Change the temporary admin password.** See "Phase 1 summary" in the chat for the one-time
