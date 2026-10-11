@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { DevSkipThrottleGuard } from './common/guards/dev-skip-throttle.guard';
 import configuration from './config/configuration';
 import { validate } from './config/env.validation';
 import { HealthModule } from './modules/health/health.module';
@@ -47,6 +48,6 @@ import { CronModule } from './modules/cron/cron.module';
     PrivacyModule,
     CronModule,
   ],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
+  providers: [{ provide: APP_GUARD, useClass: DevSkipThrottleGuard }],
 })
 export class AppModule {}
