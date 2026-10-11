@@ -1,5 +1,10 @@
+// Vercel sets NODE_ENV=production for BOTH production and preview deployments, so NODE_ENV
+// alone can't distinguish them. VERCEL_ENV does ("production" | "preview" | "development") and
+// takes priority whenever it's set; locally (no VERCEL_ENV) we fall back to NODE_ENV.
+const effectiveEnv = process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? 'development';
+
 export default () => ({
-  nodeEnv: process.env.NODE_ENV ?? 'development',
+  nodeEnv: effectiveEnv,
   port: parseInt(process.env.PORT ?? '4000', 10),
   admin: {
     email: process.env.ADMIN_EMAIL,
@@ -17,11 +22,11 @@ export default () => ({
     .map((s) => s.trim())
     .filter(Boolean),
   mongo: {
-    // Only a real "production" NODE_ENV (set by Vercel for the prod deployment) uses
-    // MONGODB_URI. Local dev and automated tests always prefer MONGODB_URI_DEV so a
-    // developer running the server locally can never accidentally write to prod data.
+    // Only a real production environment reads MONGODB_URI — local dev, preview deploys,
+    // and tests all use MONGODB_URI_DEV, so neither a developer nor a preview deploy can
+    // ever touch production data.
     uri:
-      process.env.NODE_ENV === 'production'
+      effectiveEnv === 'production'
         ? process.env.MONGODB_URI
         : process.env.MONGODB_URI_DEV ?? process.env.MONGODB_URI,
   },
