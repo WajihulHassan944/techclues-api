@@ -53,14 +53,17 @@ async function main() {
   const now = Date.now();
 
   // --- Admin ---
+  // Always reset credentials to the configured defaults, not just on first run: e2e tests (e.g.
+  // the settings "change password" flow) mutate the real admin account, and reseeding is how
+  // test isolation gets restored between runs rather than leaving a changed password behind.
   const email = process.env.ADMIN_EMAIL ?? 'techcluesltd@gmail.com';
-  const existingAdmin = await Admin.findOne({ email });
-  if (!existingAdmin) {
-    const passwordHash =
-      process.env.ADMIN_PASSWORD_HASH ?? (await bcrypt.hash('ChangeMe123!', 12));
-    await Admin.create({ email, passwordHash });
-    console.log(`Seeded admin ${email}`);
-  }
+  const passwordHash = process.env.ADMIN_PASSWORD_HASH ?? (await bcrypt.hash('ChangeMe123!', 12));
+  await Admin.findOneAndUpdate(
+    { email },
+    { $set: { email, passwordHash, failedLoginAttempts: 0, tokenVersion: 0 }, $unset: { lockUntil: 1 } },
+    { upsert: true },
+  );
+  console.log(`Seeded admin ${email}`);
 
   // --- Settings ---
   await Settings.deleteMany({});
