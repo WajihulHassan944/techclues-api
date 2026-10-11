@@ -17,7 +17,7 @@
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
     "seed": "ts-node -r tsconfig-paths/register src/database/seed.ts",
-    "vercel-build": "nest build"
+    "vercel-build": "nest build && node -e \"require('fs').cpSync('dist','api/dist',{recursive:true})\""
   },
   "jest": {
     "moduleFileExtensions": ["js", "json", "ts"],
