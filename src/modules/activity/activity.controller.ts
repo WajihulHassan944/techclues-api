@@ -1,6 +1,13 @@
-import { Controller, Delete, Get, HttpCode, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Post, Query, UseGuards } from '@nestjs/common';
+import { IsIn, IsString } from 'class-validator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ACTIVITY_KINDS, ActivityKind } from '../../database/schemas/activity.schema';
 import { ActivityService } from './activity.service';
+
+class LogActivityDto {
+  @IsIn(ACTIVITY_KINDS) kind!: ActivityKind;
+  @IsString() text!: string;
+}
 
 @UseGuards(JwtAuthGuard)
 @Controller('admin/activity')
@@ -10,6 +17,13 @@ export class ActivityController {
   @Get()
   list(@Query('limit') limit?: string) {
     return this.activity.list(limit ? parseInt(limit, 10) : 300);
+  }
+
+  /** For client-only actions the backend has no other record of (CSV export, test email, etc). */
+  @Post()
+  async log(@Body() dto: LogActivityDto) {
+    await this.activity.log(dto.kind, dto.text);
+    return { ok: true };
   }
 
   @Get('export')
