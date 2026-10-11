@@ -1,0 +1,91 @@
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Throttle } from '@nestjs/throttler';
+import { Request, Response } from 'express';
+import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentUser, AuthUser } from './current-user.decorator';
+
+const REFRESH_COOKIE = 'tc_refresh';
+
+@Controller('auth')
+export class AuthController {
+  constructor(
+    private readonly auth: AuthService,
+    private readonly config: ConfigService,
+  ) {}
+
+  private cookieOptions() {
+    const isProd = this.config.get<string>('nodeEnv') === 'production';
+    return {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? ('none' as const) : ('lax' as const),
+      path: '/api/auth',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    };
+  }
+
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post('login')
+  @HttpCode(200)
+  async login(
+    @Body() dto: LoginDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const admin = await this.auth.validateLogin(dto.email, dto.password, req.ip);
+    const tokens = this.auth.issueTokens(admin);
+    res.cookie(REFRESH_COOKIE, tokens.refreshToken, this.cookieOptions());
+    return { accessToken: tokens.accessToken, email: admin.email };
+  }
+
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @Post('refresh')
+  @HttpCode(200)
+  async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const token = req.cookies?.[REFRESH_COOKIE];
+    if (!token) throw new UnauthorizedException('No refresh token');
+    const tokens = await this.auth.refresh(token);
+    res.cookie(REFRESH_COOKIE, tokens.refreshToken, this.cookieOptions());
+    return { accessToken: tokens.accessToken };
+  }
+
+  @Post('logout')
+  @HttpCode(200)
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie(REFRESH_COOKIE, { path: '/api/auth' });
+    return { ok: true };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  me(@CurrentUser() user: AuthUser) {
+    return { email: user.email };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  @HttpCode(200)
+  async changePassword(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: ChangePasswordDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const tokens = await this.auth.changePassword(user.sub, dto.currentPassword, dto.newPassword);
+    res.cookie(REFRESH_COOKIE, tokens.refreshToken, this.cookieOptions());
+    return { accessToken: tokens.accessToken };
+  }
+}
