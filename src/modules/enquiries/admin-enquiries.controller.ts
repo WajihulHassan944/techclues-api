@@ -40,6 +40,11 @@ export class AdminEnquiriesController {
     return this.enquiries.unreadCount().then((count) => ({ count }));
   }
 
+  @Get('blocked')
+  listBlocked() {
+    return this.enquiries.listBlocked();
+  }
+
   @Get(':id')
   get(@Param('id') id: string) {
     return this.enquiries.findOne(id);

@@ -188,6 +188,10 @@ export class EnquiriesService {
     return doc;
   }
 
+  async listBlocked() {
+    return this.blockedModel.find().sort({ at: -1 }).lean();
+  }
+
   async block(email: string) {
     await this.blockedModel.updateOne(
       { email: email.toLowerCase() },
