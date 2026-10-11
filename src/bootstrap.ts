@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import compression from 'compression';
+import { NextFunction, Request, Response } from 'express';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
@@ -19,6 +20,16 @@ export async function createApp(): Promise<INestApplication> {
   app.use(helmet());
   app.use(compression());
   app.use(cookieParser());
+
+  // vercel.json rewrites "/api/:path*" -> "/api" so this single serverless function
+  // handles every route; because the destination doesn't reference :path*, Vercel
+  // appends the unmatched segments as a literal "path" query param on every request.
+  // Strip it before validation runs, or any endpoint binding a whole DTO via @Query()
+  // (with the global ValidationPipe's forbidNonWhitelisted) would reject every request.
+  app.use((req: Request, _res: Response, next: NextFunction) => {
+    if ('path' in req.query) delete (req.query as Record<string, unknown>).path;
+    next();
+  });
 
   const allowedOrigins = config.get<string[]>('allowedOrigins') ?? [];
   app.enableCors({
