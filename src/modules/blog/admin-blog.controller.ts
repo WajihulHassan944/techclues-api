@@ -89,6 +89,11 @@ export class AdminBlogController {
     return this.blog.createCategory(dto.name);
   }
 
+  @Patch('categories/:id')
+  renameCategory(@Param('id') id: string, @Body() dto: CreateCategoryDto) {
+    return this.blog.renameCategory(id, dto.name);
+  }
+
   @Delete('categories/:id')
   async removeCategory(@Param('id') id: string) {
     await this.blog.removeCategory(id);
@@ -103,6 +108,17 @@ export class AdminBlogController {
   @Post('authors')
   createAuthor(@Body() dto: CreateAuthorDto) {
     return this.blog.createAuthor(dto.name, dto.role);
+  }
+
+  @Patch('authors/:id')
+  updateAuthor(@Param('id') id: string, @Body() dto: CreateAuthorDto) {
+    return this.blog.updateAuthor(id, dto.name, dto.role);
+  }
+
+  @Delete('authors/:id')
+  async removeAuthor(@Param('id') id: string) {
+    await this.blog.removeAuthor(id);
+    return { ok: true };
   }
 
   @Post('upload-image')

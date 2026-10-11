@@ -153,6 +153,16 @@ export class BlogService {
     return this.categoryModel.create({ name });
   }
 
+  async renameCategory(id: string, name: string) {
+    const category = await this.categoryModel.findById(id);
+    if (!category) throw new NotFoundException('Category not found');
+    const oldName = category.name;
+    category.name = name;
+    await category.save();
+    await this.postModel.updateMany({ category: oldName }, { category: name });
+    return category;
+  }
+
   async removeCategory(id: string) {
     await this.categoryModel.findByIdAndDelete(id);
   }
@@ -164,6 +174,19 @@ export class BlogService {
 
   async createAuthor(name: string, role: string) {
     return this.authorModel.create({ name, role });
+  }
+
+  async updateAuthor(id: string, name: string, role: string) {
+    const author = await this.authorModel.findById(id);
+    if (!author) throw new NotFoundException('Author not found');
+    author.name = name;
+    author.role = role;
+    await author.save();
+    return author;
+  }
+
+  async removeAuthor(id: string) {
+    await this.authorModel.findByIdAndDelete(id);
   }
 
   async uploadImage(buffer: Buffer) {
