@@ -5,6 +5,7 @@ export const ACTIVITY_KINDS = [
   'inbox',
   'bookings',
   'blog',
+  'faq',
   'newsletter',
   'settings',
   'security',

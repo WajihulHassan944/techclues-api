@@ -13,6 +13,7 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { EnquiriesModule } from './modules/enquiries/enquiries.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { BlogModule } from './modules/blog/blog.module';
+import { FaqModule } from './modules/faq/faq.module';
 import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { PusherModule } from './modules/pusher/pusher.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
@@ -49,6 +50,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     EnquiriesModule,
     BookingsModule,
     BlogModule,
+    FaqModule,
     NewsletterModule,
     PusherModule,
     CloudinaryModule,

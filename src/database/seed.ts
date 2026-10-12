@@ -8,12 +8,14 @@ import { EnquirySchema } from './schemas/enquiry.schema';
 import { BlockedSenderSchema } from './schemas/blocked-sender.schema';
 import { BookingSchema, AvailabilitySchema } from './schemas/booking.schema';
 import { BlogPostSchema, BlogCategorySchema, BlogAuthorSchema } from './schemas/blog.schema';
+import { FaqSchema } from './schemas/faq.schema';
 import { SubscriberSchema } from './schemas/subscriber.schema';
 import { SettingsSchema } from './schemas/settings.schema';
 import { DEFAULT_TEMPLATES, SIGNATURE } from '../common/constants/defaults';
 import { DEFAULT_AVAILABILITY } from '../common/utils/availability';
 import { BODIES } from './seed-blog-bodies';
 import { seedBookingsData, seedInboxData, seedSubscribersData } from './seed-generators';
+import faqsData from './data/faqs-data.json';
 
 async function main() {
   const uri = process.env.MONGODB_URI_DEV;
@@ -36,6 +38,7 @@ async function main() {
   const BlogPost = mongoose.model('BlogPost', BlogPostSchema);
   const BlogCategory = mongoose.model('BlogCategory', BlogCategorySchema);
   const BlogAuthor = mongoose.model('BlogAuthor', BlogAuthorSchema);
+  const Faq = mongoose.model('Faq', FaqSchema);
   const Subscriber = mongoose.model('Subscriber', SubscriberSchema);
   const Settings = mongoose.model('Settings', SettingsSchema);
 
@@ -47,6 +50,7 @@ async function main() {
     BlogPost.deleteMany({}),
     BlogCategory.deleteMany({}),
     BlogAuthor.deleteMany({}),
+    Faq.deleteMany({}),
     Subscriber.deleteMany({}),
   ]);
 
@@ -186,6 +190,14 @@ async function main() {
     },
   ]);
   console.log('Seeded blog posts, categories and authors');
+
+  // --- FAQs: ported from the frontend's old static lib/service-faqs.ts (+ the calculator/home lists) ---
+  const faqGroups = faqsData as Record<string, { q: string; a: string }[]>;
+  const faqDocs = Object.entries(faqGroups).flatMap(([group, items]) =>
+    items.map((item, i) => ({ group, question: item.q, answer: item.a, order: i, published: true })),
+  );
+  await Faq.insertMany(faqDocs);
+  console.log(`Seeded ${faqDocs.length} FAQs across ${Object.keys(faqGroups).length} groups`);
 
   // --- Newsletter: full parity with lib/admin/newsletter.ts's seedSubscribers (65 items) ---
   const subscribers = seedSubscribersData(now).map((s) => ({
