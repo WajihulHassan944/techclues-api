@@ -29,15 +29,18 @@ export class AuthController {
     private readonly config: ConfigService,
   ) {}
 
-  private cookieOptions() {
+  private cookieAttrs() {
     const isProd = this.config.get<string>('nodeEnv') === 'production';
     return {
       httpOnly: true,
       secure: isProd,
       sameSite: isProd ? ('none' as const) : ('lax' as const),
       path: '/api/auth',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
     };
+  }
+
+  private cookieOptions() {
+    return { ...this.cookieAttrs(), maxAge: 7 * 24 * 60 * 60 * 1000 };
   }
 
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
@@ -69,7 +72,9 @@ export class AuthController {
   @HttpCode(200)
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     await this.auth.revokeSessionFromToken(req.cookies?.[REFRESH_COOKIE]);
-    res.clearCookie(REFRESH_COOKIE, { path: '/api/auth' });
+    // Match the attributes the cookie was set with (secure, sameSite, path) — some browsers
+    // won't apply a clearing Set-Cookie that doesn't match, leaving the old cookie in place.
+    res.clearCookie(REFRESH_COOKIE, this.cookieAttrs());
     return { ok: true };
   }
 
