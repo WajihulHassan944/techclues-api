@@ -20,6 +20,7 @@ import { EmailModule } from './modules/email/email.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { PrivacyModule } from './modules/privacy/privacy.module';
 import { CronModule } from './modules/cron/cron.module';
+import { SearchModule } from './modules/search/search.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { CronModule } from './modules/cron/cron.module';
     DashboardModule,
     PrivacyModule,
     CronModule,
+    SearchModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: DevSkipThrottleGuard }],
 })
