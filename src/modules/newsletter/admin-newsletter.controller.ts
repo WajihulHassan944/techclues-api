@@ -13,6 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { NewsletterService } from './newsletter.service';
 import {
+  AddManySubscribersDto,
   AddSubscriberDto,
   DeleteByEmailDto,
   RemoveSubscribersDto,
@@ -63,6 +64,11 @@ export class AdminNewsletterController {
   @UseInterceptors(FileInterceptor('file'))
   async import(@UploadedFile() file: Express.Multer.File) {
     return this.newsletter.importCsv(file.buffer, 'import');
+  }
+
+  @Post('add-many')
+  async addMany(@Body() dto: AddManySubscribersDto) {
+    return this.newsletter.addMany(dto.emails, dto.source ?? 'import');
   }
 
   @Post('status')

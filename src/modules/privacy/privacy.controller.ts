@@ -4,6 +4,7 @@ import { EnquiriesService } from '../enquiries/enquiries.service';
 import { BookingsService } from '../bookings/bookings.service';
 import { NewsletterService } from '../newsletter/newsletter.service';
 import { ActivityService } from '../activity/activity.service';
+import { EmailService } from '../email/email.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('admin/privacy')
@@ -13,6 +14,7 @@ export class PrivacyController {
     private readonly bookings: BookingsService,
     private readonly newsletter: NewsletterService,
     private readonly activity: ActivityService,
+    private readonly email: EmailService,
   ) {}
 
   @Get('find')
@@ -31,6 +33,7 @@ export class PrivacyController {
       this.enquiries.deleteByEmail(email),
       this.bookings.deleteByEmail(email),
       this.newsletter.deleteByEmail(email),
+      this.email.deleteContact(email),
     ]);
     await this.activity.log('security', `Erased all data for ${email} (privacy request)`);
     return {

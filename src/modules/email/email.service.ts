@@ -110,6 +110,20 @@ export class EmailService {
     }
   }
 
+  /** Deletes the Brevo contact entirely — used for GDPR erasure, not routine unsubscribes. */
+  async deleteContact(email: string) {
+    if (!this.apiKey) return;
+    try {
+      await firstValueFrom(
+        this.http.delete(`${BREVO_BASE}/contacts/${encodeURIComponent(email)}`, {
+          headers: this.headers(),
+        }),
+      );
+    } catch (err) {
+      this.logger.error(`Failed to delete Brevo contact ${email}`, (err as Error).message);
+    }
+  }
+
   async ensureList(name: string): Promise<number | undefined> {
     if (this.listId) return this.listId;
     if (!this.apiKey) return undefined;

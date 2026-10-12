@@ -95,9 +95,11 @@ export class NewsletterService {
         at: new Date(),
         unsubscribeToken: randomBytes(24).toString('hex'),
       });
+      await this.email.upsertContact(normalized);
       added += 1;
     }
-    await this.activity.log('newsletter', `Imported ${added} new subscriber(s) via CSV`);
+    if (added > 0) await this.pusher.trigger('subscriber.created', { email: `${added} imported` });
+    await this.activity.log('newsletter', `Imported ${added} new subscriber(s)`);
     return { added, existing: existingCount, invalid };
   }
 

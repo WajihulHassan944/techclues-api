@@ -23,3 +23,8 @@ export class ImportCsvDto {
 export class DeleteByEmailDto {
   @IsEmail() email!: string;
 }
+
+export class AddManySubscribersDto {
+  @IsArray() @IsString({ each: true }) emails!: string[];
+  @IsIn(SUB_SOURCES) @IsOptional() source?: (typeof SUB_SOURCES)[number];
+}
