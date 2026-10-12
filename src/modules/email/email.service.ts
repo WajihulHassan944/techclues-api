@@ -13,8 +13,10 @@ export interface SendEmailOptions {
   to: { email: string; name?: string }[];
   subject: string;
   htmlContent: string;
+  textContent?: string;
   replyTo?: { email: string; name?: string };
   attachments?: Attachment[];
+  headers?: Record<string, string>;
 }
 
 const BREVO_BASE = 'https://api.brevo.com/v3';
@@ -60,8 +62,10 @@ export class EmailService {
             to: options.to,
             subject: options.subject,
             htmlContent: options.htmlContent,
+            textContent: options.textContent,
             replyTo: options.replyTo,
             attachment: options.attachments,
+            headers: options.headers,
           },
           { headers: this.headers() },
         ),

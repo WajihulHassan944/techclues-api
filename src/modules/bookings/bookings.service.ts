@@ -10,6 +10,7 @@ import { EmailService } from '../email/email.service';
 import { PusherService } from '../pusher/pusher.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { buildBookingIcs } from '../../common/utils/ics';
+import { bookingAdminEmail, bookingVisitorEmail } from '../email/templates';
 
 @Injectable()
 export class BookingsService {
@@ -142,10 +143,12 @@ export class BookingsService {
     );
 
     if (settings.events.booking) {
+      const mail = bookingAdminEmail(booking, 'created');
       await this.email.send({
         to: settings.recipients.map((e) => ({ email: e })),
-        subject: `New booking: ${booking.name} — ${booking.start.toISOString()}`,
-        htmlContent: `<p>${booking.name} (${booking.email}) booked a call for ${booking.start.toUTCString()}.</p><p>Topic: ${booking.topic}</p>`,
+        subject: mail.subject,
+        htmlContent: mail.html,
+        textContent: mail.text,
       });
     }
 
@@ -160,10 +163,12 @@ export class BookingsService {
         attendeeEmail: booking.email,
         attendeeName: booking.name,
       });
+      const mail = bookingVisitorEmail(booking, 'confirmed', settings);
       await this.email.send({
         to: [{ email: booking.email, name: booking.name }],
-        subject: 'Your call with TechClues is confirmed',
-        htmlContent: `<p>Hi ${booking.name},</p><p>Your call is confirmed for ${booking.start.toUTCString()} (UK time).</p><p>Join here: <a href="${booking.meetingLink}">${booking.meetingLink}</a></p><p>${settings.signature.replace(/\n/g, '<br/>')}</p>`,
+        subject: mail.subject,
+        htmlContent: mail.html,
+        textContent: mail.text,
         attachments: [{ name: 'invite.ics', content: Buffer.from(ics).toString('base64') }],
       });
     } catch {
@@ -236,10 +241,12 @@ export class BookingsService {
 
     if (notify) {
       const settings = await this.settings.get();
+      const mail = bookingVisitorEmail(booking, 'rescheduled', settings);
       await this.email.send({
         to: [{ email: booking.email, name: booking.name }],
-        subject: 'Your TechClues call has been rescheduled',
-        htmlContent: `<p>Hi ${booking.name},</p><p>Your call has been moved to ${booking.start.toUTCString()} (UK time).</p><p>${settings.signature.replace(/\n/g, '<br/>')}</p>`,
+        subject: mail.subject,
+        htmlContent: mail.html,
+        textContent: mail.text,
       });
     }
     await this.activity.log(
@@ -260,17 +267,21 @@ export class BookingsService {
 
     const settings = await this.settings.get();
     if (notify) {
+      const mail = bookingVisitorEmail(booking, 'cancelled', settings, reason);
       await this.email.send({
         to: [{ email: booking.email, name: booking.name }],
-        subject: 'Your TechClues call has been cancelled',
-        htmlContent: `<p>Hi ${booking.name},</p><p>Your call for ${booking.start.toUTCString()} has been cancelled.</p><p>Reason: ${reason}</p><p>${settings.signature.replace(/\n/g, '<br/>')}</p>`,
+        subject: mail.subject,
+        htmlContent: mail.html,
+        textContent: mail.text,
       });
     }
     if (settings.events.cancelled) {
+      const mail = bookingAdminEmail(booking, 'cancelled', reason);
       await this.email.send({
         to: settings.recipients.map((e) => ({ email: e })),
-        subject: `Booking cancelled: ${booking.name}`,
-        htmlContent: `<p>${booking.name}'s call for ${booking.start.toUTCString()} was cancelled. Reason: ${reason}</p>`,
+        subject: mail.subject,
+        htmlContent: mail.html,
+        textContent: mail.text,
       });
     }
     await this.activity.log('bookings', `Cancelled ${booking.name}'s call`);

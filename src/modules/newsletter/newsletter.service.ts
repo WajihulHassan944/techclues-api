@@ -10,6 +10,11 @@ import { EmailService } from '../email/email.service';
 import { PusherService } from '../pusher/pusher.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { SettingsService } from '../settings/settings.service';
+import {
+  newsletterUnsubscribeEmail,
+  newsletterWelcomeEmail,
+  subscriberAdminEmail,
+} from '../email/templates';
 
 /** Ported verbatim from the frontend's `lib/admin/newsletter.ts`. */
 export const EMAIL_RE = /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/;
@@ -43,20 +48,23 @@ export class NewsletterService {
     if (!EMAIL_RE.test(normalized)) return 'Enter a valid email address';
 
     const existing = await this.model.findOne({ email: normalized });
+    let unsubscribeToken: string;
     if (existing) {
       if (existing.status === 'subscribed') return 'That email is already subscribed';
       existing.status = 'subscribed';
       existing.endedAt = undefined;
       existing.name = name ?? existing.name;
       await existing.save();
+      unsubscribeToken = existing.unsubscribeToken;
     } else {
+      unsubscribeToken = randomBytes(24).toString('hex');
       await this.model.create({
         email: normalized,
         name,
         source,
         status: 'subscribed',
         at: new Date(),
-        unsubscribeToken: randomBytes(24).toString('hex'),
+        unsubscribeToken,
       });
     }
 
@@ -70,12 +78,21 @@ export class NewsletterService {
       '/admin/newsletter',
     );
     if (settings.events.subscriber) {
+      const mail = subscriberAdminEmail(`${normalized} subscribed via ${source}.`);
       await this.email.send({
         to: settings.recipients.map((e) => ({ email: e })),
-        subject: 'New newsletter subscriber',
-        htmlContent: `<p>${normalized} subscribed via ${source}.</p>`,
+        subject: mail.subject,
+        htmlContent: mail.html,
+        textContent: mail.text,
       });
     }
+    const welcome = newsletterWelcomeEmail(normalized, unsubscribeToken, settings);
+    await this.email.send({
+      to: [{ email: normalized, name }],
+      subject: welcome.subject,
+      htmlContent: welcome.html,
+      textContent: welcome.text,
+    });
     await this.activity.log('newsletter', `${normalized} subscribed via ${source}`);
     return '';
   }
@@ -190,6 +207,14 @@ export class NewsletterService {
     sub.endedAt = new Date();
     await sub.save();
     await this.email.removeFromList(sub.email);
+    const settings = await this.settings.get();
+    const mail = newsletterUnsubscribeEmail(sub.email, settings);
+    await this.email.send({
+      to: [{ email: sub.email, name: sub.name }],
+      subject: mail.subject,
+      htmlContent: mail.html,
+      textContent: mail.text,
+    });
     await this.activity.log('newsletter', `${sub.email} unsubscribed`);
     return sub;
   }

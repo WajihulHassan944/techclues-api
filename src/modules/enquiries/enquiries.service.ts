@@ -8,7 +8,8 @@ import { SettingsService } from '../settings/settings.service';
 import { EmailService } from '../email/email.service';
 import { PusherService } from '../pusher/pusher.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { fillTemplate } from '../../common/constants/defaults';
+import { fillTemplate, firstName } from '../../common/constants/defaults';
+import { autoReplyEmail, enquiryAdminEmail, enquiryReplyEmail } from '../email/templates';
 
 export interface CreatePublicEnquiryInput {
   source: SourceKey;
@@ -64,19 +65,27 @@ export class EnquiriesService {
       );
 
       if (settings.events.enquiry) {
+        const mail = enquiryAdminEmail(enquiry);
         await this.email.send({
           to: settings.recipients.map((email) => ({ email })),
-          subject: `New enquiry: ${enquiry.subject}`,
-          htmlContent: `<p><strong>${enquiry.name}</strong> (${enquiry.email}) submitted a new ${enquiry.source} enquiry.</p><p>${enquiry.message}</p>`,
+          subject: mail.subject,
+          htmlContent: mail.html,
+          textContent: mail.text,
         });
       }
 
       const autoReplyTemplate = settings.templates.find((t) => t.sources?.includes(input.source));
       if (autoReplyTemplate) {
+        const mail = autoReplyEmail(
+          firstName(enquiry.name),
+          fillTemplate(autoReplyTemplate.body, enquiry.name),
+          settings,
+        );
         await this.email.send({
           to: [{ email: enquiry.email, name: enquiry.name }],
-          subject: 'Thanks for getting in touch — TechClues',
-          htmlContent: fillTemplate(autoReplyTemplate.body, enquiry.name).replace(/\n/g, '<br/>'),
+          subject: mail.subject,
+          htmlContent: mail.html,
+          textContent: mail.text,
           replyTo: { email: settings.recipients[0] },
         });
       }
@@ -171,14 +180,27 @@ export class EnquiriesService {
   async sendReply(id: string, body: string) {
     const doc = await this.findOne(id);
     const settings = await this.settings.get();
-    const html = `${body.replace(/\n/g, '<br/>')}<br/><br/>${settings.signature.replace(/\n/g, '<br/>')}`;
+    const mail = enquiryReplyEmail(
+      firstName(doc.name),
+      body,
+      { name: doc.name, message: doc.message },
+      settings,
+    );
+    const originalMessageId = `<enquiry-${doc._id}@techclues.co.uk>`;
+    const replyMessageId = `<enquiry-${doc._id}-${doc.thread.length}@techclues.co.uk>`;
 
     try {
       await this.email.send({
         to: [{ email: doc.email, name: doc.name }],
         subject: `Re: ${doc.subject}`,
-        htmlContent: html,
+        htmlContent: mail.html,
+        textContent: mail.text,
         replyTo: { email: settings.recipients[0], name: settings.fromName },
+        headers: {
+          'Message-ID': replyMessageId,
+          'In-Reply-To': originalMessageId,
+          References: originalMessageId,
+        },
       });
       doc.thread.push({ from: 'us', at: new Date(), body, deliveryStatus: 'sent' } as never);
       doc.status = 'replied';

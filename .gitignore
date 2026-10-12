@@ -3,6 +3,7 @@ dist/
 api/dist/
 .env
 .env.local
+email-previews/
 *.log
 coverage/
 .vercel/
