@@ -4,9 +4,15 @@
 // Faq collection, so it becomes editable from the admin panel. Safe to re-run: it does nothing
 // if the collection already has documents, unless --force is passed.
 import 'dotenv/config';
+import dns from 'dns';
 import mongoose from 'mongoose';
 import { FaqSchema } from './schemas/faq.schema';
 import faqsData from './data/faqs-data.json';
+
+// Some local/corporate networks ship a Node-visible resolver that can't do the SRV + TXT
+// lookups `mongodb+srv://` needs, even though the OS's own resolver handles them fine —
+// pointing Node at a public resolver sidesteps that without touching system DNS settings.
+dns.setServers(['1.1.1.1', '8.8.8.8']);
 
 async function main() {
   const uri = process.env.MONGODB_URI ?? process.env.MONGODB_URI_DEV;
