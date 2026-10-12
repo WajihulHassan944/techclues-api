@@ -58,6 +58,30 @@ export class DashboardService {
     const won = enquiries.filter((e) => e.status === 'won').length;
     const conversion = total > 0 ? won / total : 0;
 
+    const previousStart = new Date(start.getTime() - days * 86_400_000);
+    const previousTotal = await this.enquiryModel.countDocuments({
+      folder: { $ne: 'spam' },
+      received: { $gte: previousStart, $lt: start },
+    });
+
+    const sparkDays = 12;
+    const sparkStart = new Date(now - sparkDays * 86_400_000);
+    const sparkEnquiries = await this.enquiryModel
+      .find({ folder: { $ne: 'spam' }, received: { $gte: sparkStart } })
+      .select('received')
+      .lean();
+    const spark: number[] = [];
+    for (let i = sparkDays - 1; i >= 0; i--) {
+      const dayStart = new Date(now - (i + 1) * 86_400_000);
+      const dayEnd = new Date(now - i * 86_400_000);
+      spark.push(
+        sparkEnquiries.filter(
+          (e) =>
+            e.received.getTime() >= dayStart.getTime() && e.received.getTime() < dayEnd.getTime(),
+        ).length,
+      );
+    }
+
     const bySourceTotal: Record<string, number> = {};
     for (const key of SOURCE_KEYS)
       bySourceTotal[key] = enquiries.filter((e) => e.source === key).length;
@@ -77,6 +101,8 @@ export class DashboardService {
     return {
       range,
       total,
+      previousTotal,
+      spark,
       conversion,
       bySource: bySourceTotal,
       buckets,
