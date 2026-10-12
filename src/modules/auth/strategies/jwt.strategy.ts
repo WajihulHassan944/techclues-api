@@ -5,6 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Admin } from '../../../database/schemas/admin.schema';
+import { Session } from '../../../database/schemas/session.schema';
 import { JwtPayload } from '../jwt-payload.interface';
 
 @Injectable()
@@ -12,6 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     config: ConfigService,
     @InjectModel(Admin.name) private readonly adminModel: Model<Admin>,
+    @InjectModel(Session.name) private readonly sessionModel: Model<Session>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -26,6 +28,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     if (!admin || admin.tokenVersion !== payload.tokenVersion) {
       throw new UnauthorizedException('Session no longer valid');
     }
-    return { sub: payload.sub, email: payload.email };
+    if (payload.sid) {
+      const session = await this.sessionModel.findById(payload.sid);
+      if (!session || session.revoked) throw new UnauthorizedException('Session no longer valid');
+    }
+    return { sub: payload.sub, email: payload.email, sid: payload.sid };
   }
 }

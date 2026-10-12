@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
+  Param,
   Post,
   Req,
   Res,
@@ -47,7 +49,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const admin = await this.auth.validateLogin(dto.email, dto.password, req.ip);
-    const tokens = this.auth.issueTokens(admin);
+    const tokens = await this.auth.loginSession(admin, req.headers['user-agent'], req.ip);
     res.cookie(REFRESH_COOKIE, tokens.refreshToken, this.cookieOptions());
     return { accessToken: tokens.accessToken, email: admin.email };
   }
@@ -65,7 +67,8 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(200)
-  logout(@Res({ passthrough: true }) res: Response) {
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    await this.auth.revokeSessionFromToken(req.cookies?.[REFRESH_COOKIE]);
     res.clearCookie(REFRESH_COOKIE, { path: '/api/auth' });
     return { ok: true };
   }
@@ -84,8 +87,42 @@ export class AuthController {
     @Body() dto: ChangePasswordDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.auth.changePassword(user.sub, dto.currentPassword, dto.newPassword);
+    const tokens = await this.auth.changePassword(
+      user.sub,
+      user.sid,
+      dto.currentPassword,
+      dto.newPassword,
+    );
     res.cookie(REFRESH_COOKIE, tokens.refreshToken, this.cookieOptions());
     return { accessToken: tokens.accessToken };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('sessions')
+  async sessions(@CurrentUser() user: AuthUser) {
+    const sessions = await this.auth.listSessions(user.sub);
+    return sessions.map((s) => ({
+      id: String(s._id),
+      device: s.device,
+      ip: s.ip,
+      createdAt: s.createdAt,
+      lastUsedAt: s.lastUsedAt,
+      current: String(s._id) === user.sid,
+    }));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('sessions/:id')
+  async revokeSession(@CurrentUser() user: AuthUser, @Param('id') id: string) {
+    await this.auth.revokeSession(user.sub, id);
+    return { ok: true };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('sessions/revoke-others')
+  @HttpCode(200)
+  async revokeOthers(@CurrentUser() user: AuthUser) {
+    await this.auth.revokeOtherSessions(user.sub, user.sid);
+    return { ok: true };
   }
 }

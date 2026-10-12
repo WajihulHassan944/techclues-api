@@ -3,4 +3,5 @@ export interface JwtPayload {
   email: string;
   tokenVersion: number;
   type: 'access' | 'refresh';
+  sid: string;
 }

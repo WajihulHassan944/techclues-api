@@ -4,6 +4,7 @@ import { Request } from 'express';
 export interface AuthUser {
   sub: string;
   email: string;
+  sid: string;
 }
 
 export const CurrentUser = createParamDecorator(
