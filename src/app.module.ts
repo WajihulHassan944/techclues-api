@@ -33,7 +33,14 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({ uri: config.get<string>('mongo.uri') }),
+      useFactory: (config: ConfigService) => ({
+        uri: config.get<string>('mongo.uri'),
+        // Serverless cold starts commonly stall for several seconds on IPv6 happy-eyeballs
+        // fallback before trying IPv4 — forcing IPv4 skips that wait entirely. A small pool
+        // is enough for one Lambda instance and keeps the initial connect itself cheaper.
+        family: 4,
+        maxPoolSize: 5,
+      }),
     }),
     HealthModule,
     AuthModule,
