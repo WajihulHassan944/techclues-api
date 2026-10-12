@@ -5,6 +5,7 @@ import { ActivityModule } from '../activity/activity.module';
 import { EmailModule } from '../email/email.module';
 import { PusherModule } from '../pusher/pusher.module';
 import { SettingsModule } from '../settings/settings.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 import { NewsletterService } from './newsletter.service';
 import { PublicNewsletterController } from './public-newsletter.controller';
 import { AdminNewsletterController } from './admin-newsletter.controller';
@@ -16,6 +17,7 @@ import { AdminNewsletterController } from './admin-newsletter.controller';
     EmailModule,
     PusherModule,
     SettingsModule,
+    NotificationsModule,
   ],
   providers: [NewsletterService],
   controllers: [PublicNewsletterController, AdminNewsletterController],

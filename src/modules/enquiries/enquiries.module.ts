@@ -6,6 +6,7 @@ import { ActivityModule } from '../activity/activity.module';
 import { SettingsModule } from '../settings/settings.module';
 import { EmailModule } from '../email/email.module';
 import { PusherModule } from '../pusher/pusher.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 import { EnquiriesService } from './enquiries.service';
 import { PublicEnquiriesController } from './public-enquiries.controller';
 import { AdminEnquiriesController } from './admin-enquiries.controller';
@@ -20,6 +21,7 @@ import { AdminEnquiriesController } from './admin-enquiries.controller';
     SettingsModule,
     EmailModule,
     PusherModule,
+    NotificationsModule,
   ],
   providers: [EnquiriesService],
   controllers: [PublicEnquiriesController, AdminEnquiriesController],

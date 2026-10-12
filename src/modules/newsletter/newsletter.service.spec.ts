@@ -6,6 +6,7 @@ import { ActivityService } from '../activity/activity.service';
 import { EmailService } from '../email/email.service';
 import { PusherService } from '../pusher/pusher.service';
 import { SettingsService } from '../settings/settings.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 describe('EMAIL_RE', () => {
   it('accepts well-formed emails', () => {
@@ -44,6 +45,7 @@ describe('NewsletterService.add', () => {
             get: jest.fn().mockResolvedValue({ events: { subscriber: false }, recipients: [] }),
           },
         },
+        { provide: NotificationsService, useValue: { create: jest.fn() } },
       ],
     }).compile();
     service = moduleRef.get(NewsletterService);

@@ -3,7 +3,12 @@ import { ConfigService } from '@nestjs/config';
 import Pusher from 'pusher';
 
 export type AdminChannelEvent =
-  'enquiry.created' | 'booking.created' | 'booking.updated' | 'subscriber.created' | 'reply.sent';
+  | 'enquiry.created'
+  | 'booking.created'
+  | 'booking.updated'
+  | 'subscriber.created'
+  | 'reply.sent'
+  | 'notification.created';
 
 @Injectable()
 export class PusherService {

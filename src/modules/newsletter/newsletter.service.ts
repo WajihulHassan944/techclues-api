@@ -8,6 +8,7 @@ import { Subscriber, SubSource, SubStatus } from '../../database/schemas/subscri
 import { ActivityService } from '../activity/activity.service';
 import { EmailService } from '../email/email.service';
 import { PusherService } from '../pusher/pusher.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { SettingsService } from '../settings/settings.service';
 
 /** Ported verbatim from the frontend's `lib/admin/newsletter.ts`. */
@@ -33,6 +34,7 @@ export class NewsletterService {
     private readonly email: EmailService,
     private readonly pusher: PusherService,
     private readonly settings: SettingsService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   /** Mirrors the frontend's `add(email,name,source) -> error string | ""`. */
@@ -62,6 +64,11 @@ export class NewsletterService {
 
     const settings = await this.settings.get();
     await this.pusher.trigger('subscriber.created', { email: normalized });
+    await this.notifications.create(
+      'subscriber',
+      `New subscriber: ${normalized}`,
+      '/admin/newsletter',
+    );
     if (settings.events.subscriber) {
       await this.email.send({
         to: settings.recipients.map((e) => ({ email: e })),
@@ -98,7 +105,14 @@ export class NewsletterService {
       await this.email.upsertContact(normalized);
       added += 1;
     }
-    if (added > 0) await this.pusher.trigger('subscriber.created', { email: `${added} imported` });
+    if (added > 0) {
+      await this.pusher.trigger('subscriber.created', { email: `${added} imported` });
+      await this.notifications.create(
+        'subscriber',
+        `${added} subscriber(s) imported`,
+        '/admin/newsletter',
+      );
+    }
     await this.activity.log('newsletter', `Imported ${added} new subscriber(s)`);
     return { added, existing: existingCount, invalid };
   }

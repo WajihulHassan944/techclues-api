@@ -8,6 +8,7 @@ import { ActivityService } from '../activity/activity.service';
 import { SettingsService } from '../settings/settings.service';
 import { EmailService } from '../email/email.service';
 import { PusherService } from '../pusher/pusher.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { buildBookingIcs } from '../../common/utils/ics';
 
 @Injectable()
@@ -19,6 +20,7 @@ export class BookingsService {
     private readonly settings: SettingsService,
     private readonly email: EmailService,
     private readonly pusher: PusherService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async getAvailability(): Promise<Availability> {
@@ -133,6 +135,11 @@ export class BookingsService {
       name: booking.name,
       start: booking.start,
     });
+    await this.notifications.create(
+      'booking',
+      `New booking from ${booking.name}`,
+      '/admin/bookings',
+    );
 
     if (settings.events.booking) {
       await this.email.send({

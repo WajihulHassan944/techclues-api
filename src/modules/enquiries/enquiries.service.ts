@@ -7,6 +7,7 @@ import { ActivityService } from '../activity/activity.service';
 import { SettingsService } from '../settings/settings.service';
 import { EmailService } from '../email/email.service';
 import { PusherService } from '../pusher/pusher.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { fillTemplate } from '../../common/constants/defaults';
 
 export interface CreatePublicEnquiryInput {
@@ -33,6 +34,7 @@ export class EnquiriesService {
     private readonly settings: SettingsService,
     private readonly email: EmailService,
     private readonly pusher: PusherService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async createPublic(input: CreatePublicEnquiryInput) {
@@ -55,6 +57,11 @@ export class EnquiriesService {
         subject: enquiry.subject,
         source: enquiry.source,
       });
+      await this.notifications.create(
+        'enquiry',
+        `New enquiry from ${enquiry.name}: ${enquiry.subject}`,
+        `/admin/inbox/${enquiry._id}`,
+      );
 
       if (settings.events.enquiry) {
         await this.email.send({
@@ -179,6 +186,11 @@ export class EnquiriesService {
     } catch {
       doc.thread.push({ from: 'us', at: new Date(), body, deliveryStatus: 'failed' } as never);
       await doc.save();
+      await this.notifications.create(
+        'reply-failed',
+        `Reply to ${doc.name} failed to send`,
+        `/admin/inbox/${doc._id}`,
+      );
       throw new BadRequestException('Failed to send reply email');
     }
 

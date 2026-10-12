@@ -21,6 +21,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { PrivacyModule } from './modules/privacy/privacy.module';
 import { CronModule } from './modules/cron/cron.module';
 import { SearchModule } from './modules/search/search.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { SearchModule } from './modules/search/search.module';
     PrivacyModule,
     CronModule,
     SearchModule,
+    NotificationsModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: DevSkipThrottleGuard }],
 })
