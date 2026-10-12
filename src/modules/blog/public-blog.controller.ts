@@ -17,6 +17,6 @@ export class PublicBlogController {
   async get(@Param('slug') slug: string) {
     const post = await this.blog.findBySlug(slug);
     if (post.status !== 'published') throw new NotFoundException('Post not found');
-    return post;
+    return this.blog.withAuthorOne(post);
   }
 }

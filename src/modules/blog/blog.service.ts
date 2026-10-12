@@ -86,7 +86,22 @@ export class BlogService {
         .lean(),
       this.postModel.countDocuments(filter),
     ]);
-    return { items, total, page, pageSize };
+    return { items: await this.withAuthor(items), total, page, pageSize };
+  }
+
+  async withAuthorOne(post: BlogPost) {
+    const author = await this.authorModel.findById(post.authorId).lean();
+    return { ...post.toObject(), author: author ? { name: author.name, role: author.role } : null };
+  }
+
+  /** Public responses include the author's name/role inline, since there's no public authors endpoint. */
+  private async withAuthor<T extends { authorId: string }>(
+    items: T[],
+  ): Promise<(T & { author: { name: string; role: string } | null })[]> {
+    const ids = [...new Set(items.map((i) => i.authorId))];
+    const authors = await this.authorModel.find({ _id: { $in: ids } }).lean();
+    const byId = new Map(authors.map((a) => [String(a._id), { name: a.name, role: a.role }]));
+    return items.map((i) => ({ ...i, author: byId.get(i.authorId) ?? null }));
   }
 
   async save(id: string, patch: Partial<BlogPost>) {
