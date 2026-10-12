@@ -19,7 +19,7 @@ import {
   RemoveSubscribersDto,
   SetSubStatusDto,
 } from './dto/admin-newsletter.dto';
-import { SubStatus } from '../../database/schemas/subscriber.schema';
+import { SUB_SOURCES, SubStatus } from '../../database/schemas/subscriber.schema';
 
 @UseGuards(JwtAuthGuard)
 @Controller('admin/newsletter')
@@ -49,8 +49,12 @@ export class AdminNewsletterController {
   @Get('export')
   @Header('Content-Type', 'text/csv')
   @Header('Content-Disposition', 'attachment; filename="subscribers.csv"')
-  async export() {
-    return this.newsletter.exportCsv();
+  async export(
+    @Query('status') status?: SubStatus,
+    @Query('source') source?: (typeof SUB_SOURCES)[number],
+    @Query('search') search?: string,
+  ) {
+    return this.newsletter.exportCsv({ status, source, search });
   }
 
   @Post()

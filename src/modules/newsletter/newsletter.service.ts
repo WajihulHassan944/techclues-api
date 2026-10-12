@@ -146,8 +146,14 @@ export class NewsletterService {
     return this.addMany(emails, source);
   }
 
-  async exportCsv(): Promise<string> {
-    const rows = await this.model.find().sort({ at: -1 }).lean();
+  async exportCsv(
+    query: { status?: SubStatus; source?: SubSource; search?: string } = {},
+  ): Promise<string> {
+    const filter: Record<string, unknown> = {};
+    if (query.status) filter.status = query.status;
+    if (query.source) filter.source = query.source;
+    if (query.search) filter.email = { $regex: query.search, $options: 'i' };
+    const rows = await this.model.find(filter).sort({ at: -1 }).lean();
     const data = rows.map((r) => [
       r.email,
       r.name ?? '',
