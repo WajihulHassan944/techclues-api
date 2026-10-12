@@ -25,7 +25,12 @@ describe('availability', () => {
   });
 
   it('excludes a slot that overlaps an existing confirmed booking', () => {
-    const booking = { id: 'b1', status: 'confirmed', start: '2026-10-14T08:00:00.000Z', minutes: 30 };
+    const booking = {
+      id: 'b1',
+      status: 'confirmed',
+      start: '2026-10-14T08:00:00.000Z',
+      minutes: 30,
+    };
     const slots = slotsForDay(key, DEFAULT_AVAILABILITY, [booking], now);
     expect(slots).not.toContain('2026-10-14T08:00:00.000Z');
     expect(slots).toContain('2026-10-14T08:30:00.000Z');
@@ -33,7 +38,12 @@ describe('availability', () => {
 
   it('respects the buffer between back-to-back bookings', () => {
     const av = { ...DEFAULT_AVAILABILITY, bufferMinutes: 15 };
-    const booking = { id: 'b1', status: 'confirmed', start: '2026-10-14T08:00:00.000Z', minutes: 30 };
+    const booking = {
+      id: 'b1',
+      status: 'confirmed',
+      start: '2026-10-14T08:00:00.000Z',
+      minutes: 30,
+    };
     const slots = slotsForDay(key, av, [booking], now);
     // 08:30 overlaps the 15-minute buffer after the 08:00-08:30 booking.
     expect(slots).not.toContain('2026-10-14T08:30:00.000Z');

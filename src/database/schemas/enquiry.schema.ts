@@ -10,6 +10,7 @@ export const SOURCE_KEYS = [
   'partner-join',
   'zero-one',
   'careers',
+  'chat',
 ] as const;
 export type SourceKey = (typeof SOURCE_KEYS)[number];
 

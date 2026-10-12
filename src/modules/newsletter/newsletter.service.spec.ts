@@ -33,11 +33,16 @@ describe('NewsletterService.add', () => {
         NewsletterService,
         { provide: getModelToken(Subscriber.name), useValue: { findOne, create } },
         { provide: ActivityService, useValue: { log: jest.fn() } },
-        { provide: EmailService, useValue: { upsertContact: jest.fn(), send: jest.fn(), removeFromList: jest.fn() } },
+        {
+          provide: EmailService,
+          useValue: { upsertContact: jest.fn(), send: jest.fn(), removeFromList: jest.fn() },
+        },
         { provide: PusherService, useValue: { trigger: jest.fn() } },
         {
           provide: SettingsService,
-          useValue: { get: jest.fn().mockResolvedValue({ events: { subscriber: false }, recipients: [] }) },
+          useValue: {
+            get: jest.fn().mockResolvedValue({ events: { subscriber: false }, recipients: [] }),
+          },
         },
       ],
     }).compile();

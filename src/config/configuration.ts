@@ -28,7 +28,7 @@ export default () => ({
     uri:
       effectiveEnv === 'production'
         ? process.env.MONGODB_URI
-        : process.env.MONGODB_URI_DEV ?? process.env.MONGODB_URI,
+        : (process.env.MONGODB_URI_DEV ?? process.env.MONGODB_URI),
   },
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,

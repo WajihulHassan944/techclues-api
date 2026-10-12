@@ -60,7 +60,10 @@ async function main() {
   const passwordHash = process.env.ADMIN_PASSWORD_HASH ?? (await bcrypt.hash('ChangeMe123!', 12));
   await Admin.findOneAndUpdate(
     { email },
-    { $set: { email, passwordHash, failedLoginAttempts: 0, tokenVersion: 0 }, $unset: { lockUntil: 1 } },
+    {
+      $set: { email, passwordHash, failedLoginAttempts: 0, tokenVersion: 0 },
+      $unset: { lockUntil: 1 },
+    },
     { upsert: true },
   );
   console.log(`Seeded admin ${email}`);

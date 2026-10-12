@@ -64,7 +64,12 @@ describe('TechClues API (e2e)', () => {
     it('rejects a contact submission with the honeypot filled in', async () => {
       await request(server)
         .post('/api/public/contact')
-        .send({ name: 'Bot', email: 'bot@example.com', message: 'spam', website: 'http://spam.example' })
+        .send({
+          name: 'Bot',
+          email: 'bot@example.com',
+          message: 'spam',
+          website: 'http://spam.example',
+        })
         .expect(400);
     });
 
