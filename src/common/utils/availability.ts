@@ -19,7 +19,7 @@ export const DEFAULT_AVAILABILITY: AvailabilityConfig = {
   bufferMinutes: 0,
   noticeHours: 4,
   windowDays: 21,
-  meetingLink: 'https://meet.google.com/techclues-calls',
+  meetingLink: 'https://meet.jit.si/TechClues-Calls',
   days: [
     { on: true, from: '09:00', to: '17:30' },
     { on: true, from: '09:00', to: '17:30' },

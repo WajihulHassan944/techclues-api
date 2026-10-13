@@ -32,7 +32,7 @@ const sampleBooking = {
   email: 'daniel@fleetwise.io',
   start: new Date(Date.now() + 86_400_000),
   topic: 'Estimate review',
-  meetingLink: 'https://meet.google.com/techclues-calls',
+  meetingLink: 'https://meet.jit.si/TechClues-Calls',
 };
 
 const pages: Record<string, { subject: string; html: string; text: string }> = {

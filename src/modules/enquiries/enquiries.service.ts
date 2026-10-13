@@ -74,7 +74,9 @@ export class EnquiriesService {
         });
       }
 
-      const autoReplyTemplate = settings.templates.find((t) => t.sources?.includes(input.source));
+      const autoReplyTemplate = settings.templates.find(
+        (t) => !t.sources || t.sources.includes(input.source),
+      );
       if (autoReplyTemplate) {
         const mail = autoReplyEmail(
           firstName(enquiry.name),

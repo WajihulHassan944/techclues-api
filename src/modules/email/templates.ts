@@ -6,7 +6,7 @@
 
 const SITE_URL = 'https://techclues.vercel.app';
 const API_URL = 'https://techclues-api.vercel.app';
-const LOGO_URL = `${SITE_URL}/images/techclues-logo.png`;
+const LOGO_URL = `${SITE_URL}/images/techclues-logo-white.png`;
 const BRAND = '#0064ff';
 const INK = '#0e0f31';
 const COMPANY_NAME = 'TechClues';
