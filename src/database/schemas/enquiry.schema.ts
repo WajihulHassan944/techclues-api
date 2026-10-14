@@ -11,6 +11,8 @@ export const SOURCE_KEYS = [
   'zero-one',
   'careers',
   'chat',
+  'staff-augmentation',
+  'game-development',
 ] as const;
 export type SourceKey = (typeof SOURCE_KEYS)[number];
 

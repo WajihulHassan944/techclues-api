@@ -890,5 +890,61 @@
       "q": "Which models do you use?",
       "a": "Whichever suits the task and budget, including Claude, OpenAI and Gemini. We keep the integration swappable so you're not locked in."
     }
+  ],
+  "staff-augmentation": [
+    {
+      "q": "How is this different from a full project outsourcing engagement?",
+      "a": "You keep full ownership of the roadmap and management; we add engineering capacity into your existing team rather than taking over delivery."
+    },
+    {
+      "q": "How fast can someone start?",
+      "a": "Typically within a few weeks from scoping to start date, depending on the specialisation required."
+    },
+    {
+      "q": "Can we interview candidates before they join?",
+      "a": "Yes, we share matched candidates for your approval before onboarding. Team size or roles can also flex as your roadmap shifts."
+    },
+    {
+      "q": "Do you handle payroll and employment, or do we?",
+      "a": "TechClues handles employment, payroll, and benefits; you manage day-to-day work."
+    },
+    {
+      "q": "Can this scale up or down as our project changes?",
+      "a": "Yes, headcount flexes with your roadmap without a hiring or layoff cycle on your end."
+    },
+    {
+      "q": "Who owns the code, models, and IP built by embedded engineers?",
+      "a": "You do. All code, AI models, and data pipelines built during the engagement belong to your organisation."
+    },
+    {
+      "q": "What is the difference between nearshore, onshore, and offshore?",
+      "a": "Nearshore gives close time zone overlap at lower cost than onshore; onshore puts engineers in your own region; offshore operates from our global delivery centres as a cost-efficient extension of your team."
+    }
+  ],
+  "game-development": [
+    {
+      "q": "What game engines do you develop with?",
+      "a": "Unity and Unreal Engine, with native pipelines for VR and XR and UEFN using Verse. Art is produced in Blender and 3DS Max, shipped cross-platform across mobile, PC and console."
+    },
+    {
+      "q": "What are the two ways to work with your studio?",
+      "a": "As a dedicated extension of your team when you need delivery power, or as the studio behind your player-facing title when you need an idea built end to end."
+    },
+    {
+      "q": "Do you build metaverse titles with real ownership mechanics?",
+      "a": "Yes. We build metaverse and MMO titles with wallet sign-in, digital collectibles and ownable land wired into real gameplay loops."
+    },
+    {
+      "q": "What is UEFN development, and do you build for it?",
+      "a": "UEFN, the Unreal Editor for Fortnite, lets studios publish custom games inside Fortnite using Verse. We build bespoke islands using this pipeline."
+    },
+    {
+      "q": "Do you do architectural visualisation outside of games?",
+      "a": "Yes. We deliver real-time property tours and architectural walkthroughs built on the same engines."
+    },
+    {
+      "q": "How much does game development cost?",
+      "a": "Cost depends on scope, platform and art fidelity. A prototype or vertical slice is a fixed, lower-cost starting point."
+    }
   ]
 }

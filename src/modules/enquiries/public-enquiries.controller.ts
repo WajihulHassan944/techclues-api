@@ -10,6 +10,10 @@ import { PublicGrantDto } from './dto/public-grant.dto';
 import { PublicPartnerDto } from './dto/public-partner.dto';
 import { PublicCareersDto } from './dto/public-careers.dto';
 import { PublicChatDto } from './dto/public-chat.dto';
+import {
+  PublicGameDevelopmentDto,
+  PublicStaffAugmentationDto,
+} from './dto/public-service-lead.dto';
 
 function toDetails(obj: Record<string, unknown>): { label: string; value: string }[] {
   return Object.entries(obj)
@@ -175,6 +179,52 @@ export class PublicEnquiriesController {
       subject: `Chat widget: ${dto.topic ?? dto.name}`,
       message: dto.message,
       details: toDetails({ topic: dto.topic }),
+      ip: req.ip,
+      referrer: req.headers.referer,
+    });
+    return { id: String(enquiry._id) };
+  }
+
+  @Post('staff-augmentation')
+  async staffAugmentation(@Body() dto: PublicStaffAugmentationDto, @Req() req: Request) {
+    checkHoneypot(dto.website);
+    const name = `${dto.firstName} ${dto.lastName}`.trim();
+    const enquiry = await this.enquiries.createPublic({
+      source: 'staff-augmentation',
+      name,
+      email: dto.email,
+      company: dto.company,
+      phone: dto.phone ? `${dto.phoneCode ?? ''} ${dto.phone}`.trim() : undefined,
+      subject: `Staff augmentation: ${dto.need} (${name})`,
+      message: dto.brief || `Looking for: ${dto.need}.`,
+      details: toDetails({
+        need: dto.need,
+        companySize: dto.companySize,
+        timeline: dto.timeline,
+        marketingConsent: dto.marketingConsent ? 'yes' : 'no',
+      }),
+      ip: req.ip,
+      referrer: req.headers.referer,
+    });
+    return { id: String(enquiry._id) };
+  }
+
+  @Post('game-development')
+  async gameDevelopment(@Body() dto: PublicGameDevelopmentDto, @Req() req: Request) {
+    checkHoneypot(dto.website);
+    const name = `${dto.firstName} ${dto.lastName}`.trim();
+    const enquiry = await this.enquiries.createPublic({
+      source: 'game-development',
+      name,
+      email: dto.email,
+      company: dto.company,
+      phone: dto.phone ? `${dto.phoneCode ?? ''} ${dto.phone}`.trim() : undefined,
+      subject: `Game development: ${dto.need} (${name})`,
+      message: dto.brief || `Stage: ${dto.need}.`,
+      details: toDetails({
+        stage: dto.need,
+        marketingConsent: dto.marketingConsent ? 'yes' : 'no',
+      }),
       ip: req.ip,
       referrer: req.headers.referer,
     });

@@ -77,6 +77,62 @@ describe('TechClues API (e2e)', () => {
       await request(server).post('/api/public/contact').send({ name: 'No Email' }).expect(400);
     });
 
+    it('creates a staff augmentation lead with its own source', async () => {
+      await request(server)
+        .post('/api/public/staff-augmentation')
+        .send({
+          firstName: 'Sam',
+          lastName: 'Taylor',
+          email: 'sam-staff@example.com',
+          need: 'A full team',
+          companySize: '51 – 200 employees',
+          consent: true,
+        })
+        .expect(201);
+      const list = await request(server)
+        .get('/api/admin/inbox')
+        .query({ source: 'staff-augmentation' })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(
+        list.body.items.some((e: { email: string }) => e.email === 'sam-staff@example.com'),
+      ).toBe(true);
+    });
+
+    it('creates a game development lead and rejects an unknown stage or honeypot', async () => {
+      await request(server)
+        .post('/api/public/game-development')
+        .send({
+          firstName: 'Ada',
+          lastName: 'Lovelace',
+          email: 'ada-game@example.com',
+          need: 'Just a concept',
+          consent: true,
+        })
+        .expect(201);
+      await request(server)
+        .post('/api/public/game-development')
+        .send({
+          firstName: 'A',
+          lastName: 'B',
+          email: 'x@example.com',
+          need: 'Something else',
+          consent: true,
+        })
+        .expect(400);
+      await request(server)
+        .post('/api/public/staff-augmentation')
+        .send({
+          firstName: 'Bot',
+          lastName: 'Bot',
+          email: 'bot2@example.com',
+          need: 'A full team',
+          consent: true,
+          website: 'http://spam.example',
+        })
+        .expect(400);
+    });
+
     it('appears in the admin inbox once authenticated', async () => {
       const list = await request(server)
         .get('/api/admin/inbox')
