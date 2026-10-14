@@ -860,5 +860,35 @@
       "q": "How do you support products after launch?",
       "a": "Ongoing support, maintenance and growth marketing once you're live."
     }
+  ],
+  "ai-enablement": [
+    {
+      "q": "How much does it cost?",
+      "a": "Most projects start with an AI audit: £1,500, over about two weeks. Builds start from £3,000 and are priced at the end of the audit. If you go ahead, the audit fee comes off the build."
+    },
+    {
+      "q": "Can you add AI to our existing product?",
+      "a": "Yes. That's the most common request: we connect a model to your data and build the feature into the product you already run."
+    },
+    {
+      "q": "Will our data be used to train models?",
+      "a": "We configure providers so your content isn't used for training, and we agree up front what data may leave your systems."
+    },
+    {
+      "q": "How do you stop it making things up?",
+      "a": "We ground answers in your documents, show sources, test against real examples before launch and add fallbacks for when the model isn't confident."
+    },
+    {
+      "q": "What does it cost to run?",
+      "a": "Most providers charge by usage, so cost follows how much you use it. We estimate it during the prototype and monitor spend after launch."
+    },
+    {
+      "q": "Do we need a lot of data?",
+      "a": "Not for most work. Retrieval works with the documents you already have; fine-tuning needs more, and we'll say if it's worth it."
+    },
+    {
+      "q": "Which models do you use?",
+      "a": "Whichever suits the task and budget, including Claude, OpenAI and Gemini. We keep the integration swappable so you're not locked in."
+    }
   ]
 }
