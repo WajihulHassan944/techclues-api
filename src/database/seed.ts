@@ -194,7 +194,13 @@ async function main() {
   // --- FAQs: ported from the frontend's old static lib/service-faqs.ts (+ the calculator/home lists) ---
   const faqGroups = faqsData as Record<string, { q: string; a: string }[]>;
   const faqDocs = Object.entries(faqGroups).flatMap(([group, items]) =>
-    items.map((item, i) => ({ group, question: item.q, answer: item.a, order: i, published: true })),
+    items.map((item, i) => ({
+      group,
+      question: item.q,
+      answer: item.a,
+      order: i,
+      published: true,
+    })),
   );
   await Faq.insertMany(faqDocs);
   console.log(`Seeded ${faqDocs.length} FAQs across ${Object.keys(faqGroups).length} groups`);

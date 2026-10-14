@@ -49,7 +49,10 @@ export class FaqService {
     return faq;
   }
 
-  async update(id: string, patch: Partial<Pick<Faq, 'group' | 'question' | 'answer' | 'published'>>) {
+  async update(
+    id: string,
+    patch: Partial<Pick<Faq, 'group' | 'question' | 'answer' | 'published'>>,
+  ) {
     const faq = await this.findOne(id);
     Object.assign(faq, patch);
     await faq.save();

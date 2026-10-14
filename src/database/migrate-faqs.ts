@@ -28,7 +28,9 @@ async function main() {
 
   const existing = await Faq.countDocuments();
   if (existing > 0 && !process.argv.includes('--force')) {
-    console.log(`Faq collection already has ${existing} document(s) — skipping. Pass --force to wipe and reseed.`);
+    console.log(
+      `Faq collection already has ${existing} document(s) — skipping. Pass --force to wipe and reseed.`,
+    );
     await mongoose.disconnect();
     return;
   }
@@ -38,7 +40,13 @@ async function main() {
   }
 
   const groups = faqsData as Record<string, { q: string; a: string }[]>;
-  const docs: { group: string; question: string; answer: string; order: number; published: boolean }[] = [];
+  const docs: {
+    group: string;
+    question: string;
+    answer: string;
+    order: number;
+    published: boolean;
+  }[] = [];
   for (const [group, items] of Object.entries(groups)) {
     items.forEach((item, i) => {
       docs.push({ group, question: item.q, answer: item.a, order: i, published: true });
