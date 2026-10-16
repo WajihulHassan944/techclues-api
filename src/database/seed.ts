@@ -114,7 +114,7 @@ async function main() {
       status: 'published',
       excerpt:
         'MVP software development helps startups test ideas with real users, cut costs, and use AI tools to move fast without overbuilding.',
-      cover: '/images/media/mvp-software-development-vebryx-7df8a242be.webp',
+      cover: '/images/media/mvp-software-development-techclues.webp',
       coverAlt: 'MVP Software Development',
       body: BODIES['mvp-software-development-age-of-ai'],
       publishedAt: new Date('2026-10-06T09:00:00Z'),
