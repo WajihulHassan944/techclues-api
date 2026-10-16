@@ -96,8 +96,12 @@ export function slotsInRange(
   const out: string[] = [];
   let key = dateKey(fromIso);
   const toKey = dateKey(toIso);
-  // bound the loop to the configured window regardless of what the caller asks for
-  for (let i = 0; i <= av.windowDays + 1; i++) {
+  // Walk every day up to the requested `to` (slotsForDay's own `now + windowDays` cutoff still
+  // applies per-day) — capping the iteration count at windowDays+1 here instead broke callers
+  // whose `from` is earlier than today (e.g. the start of the current month): the fixed budget
+  // got spent on already-past days, cutting the window off early. The absolute cap below is just
+  // a safety net against a malformed `to` far in the future, not the real bound.
+  for (let i = 0; i <= 366; i++) {
     out.push(...slotsForDay(key, av, bookings, now));
     if (key >= toKey) break;
     key = addDays(key, 1);

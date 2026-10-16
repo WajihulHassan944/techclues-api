@@ -72,4 +72,20 @@ describe('availability', () => {
     );
     expect(slots).toEqual(['2026-10-14T08:00:00.000Z', '2026-10-14T08:30:00.000Z']);
   });
+
+  it('still covers the full windowDays horizon when `from` is earlier than `now` (regression: the booking widget requests the whole current month, so `from` is often the 1st, days before today)', () => {
+    // `now` is 2026-10-13; `from` here is the start of the month, well before `now`.
+    const slots = slotsInRange(
+      DEFAULT_AVAILABILITY,
+      [],
+      now,
+      '2026-10-01T00:00:00.000Z',
+      '2026-11-10T00:00:00.000Z',
+    );
+    const days = [...new Set(slots.map((s) => s.slice(0, 10)))].sort();
+    // windowDays is 21 from `now` (2026-10-13), so availability should reach into early November,
+    // not stop a handful of days after `now` because the loop's iteration budget was spent
+    // walking through already-past days between `from` and `now`.
+    expect(days[days.length - 1] >= '2026-11-01').toBe(true);
+  });
 });
