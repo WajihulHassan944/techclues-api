@@ -31,7 +31,10 @@ export class ReplyTemplate {
   @Prop({ required: true })
   body!: string;
 
-  @Prop({ type: [String] })
+  // Mongoose defaults array paths to `[]` even with no explicit `default`, which would turn an
+  // "every enquiry" template (sources left unset) into one that matches nothing — `[]` is a
+  // false "only these sources" rather than "no restriction". `default: undefined` opts out.
+  @Prop({ type: [String], default: undefined })
   sources?: SourceKey[];
 }
 
