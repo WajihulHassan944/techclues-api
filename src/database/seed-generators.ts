@@ -110,7 +110,7 @@ export function seedInboxData(now: number) {
       company: 'FitLoop',
       ago: 1500,
       read: true,
-      subject: 'ZERO.ONE brief: last-minute gym classes',
+      subject: 'BUILD.ONE brief: last-minute gym classes',
       message:
         'An app that fills last-minute gym class cancellations by offering the spots to nearby members at a discount.',
       details: [
@@ -288,7 +288,7 @@ export function seedInboxData(now: number) {
       ago: 8700,
       read: true,
       status: 'lost',
-      subject: 'ZERO.ONE brief: bill splitting app',
+      subject: 'BUILD.ONE brief: bill splitting app',
       message: 'An app to split shared household bills automatically.',
       details: [
         { label: 'Idea', value: 'An app to split shared household bills automatically' },
@@ -298,7 +298,7 @@ export function seedInboxData(now: number) {
         m(
           'us',
           8600,
-          'Hi Rahul,\n\nThanks for the brief. ZERO.ONE needs five people lined up to test, so it may be worth finding testers first. Come back to us when you have them.',
+          'Hi Rahul,\n\nThanks for the brief. BUILD.ONE needs five people lined up to test, so it may be worth finding testers first. Come back to us when you have them.',
         ),
         m('them', 8000, "Understood, I'll get back to you next month."),
       ],
@@ -444,8 +444,8 @@ export function seedBookingsData(now: number) {
       'hannah@fitloop.app',
       'FitLoop',
       at(1, 15, 30),
-      'ZERO.ONE scope call',
-      'ZERO.ONE brief',
+      'BUILD.ONE scope call',
+      'BUILD.ONE brief',
       'confirmed',
       1400,
       { phone: '+44 7488 220915' },
@@ -517,8 +517,8 @@ export function seedBookingsData(now: number) {
       'rahul@spliteasy.in',
       undefined,
       at(-2, 14, 0),
-      'ZERO.ONE scope call',
-      'ZERO.ONE brief',
+      'BUILD.ONE scope call',
+      'BUILD.ONE brief',
       'no-show',
       8600,
     ),

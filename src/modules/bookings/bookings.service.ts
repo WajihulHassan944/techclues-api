@@ -9,6 +9,7 @@ import { SettingsService } from '../settings/settings.service';
 import { EmailService } from '../email/email.service';
 import { PusherService } from '../pusher/pusher.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { NewsletterService } from '../newsletter/newsletter.service';
 import { buildBookingIcs } from '../../common/utils/ics';
 import { bookingAdminEmail, bookingVisitorEmail } from '../email/templates';
 
@@ -22,6 +23,7 @@ export class BookingsService {
     private readonly email: EmailService,
     private readonly pusher: PusherService,
     private readonly notifications: NotificationsService,
+    private readonly newsletter: NewsletterService,
   ) {}
 
   async getAvailability(): Promise<Availability> {
@@ -128,6 +130,10 @@ export class BookingsService {
       }
       throw err;
     }
+
+    this.newsletter
+      .autoAdd(booking.email, booking.name.split(' ')[0], 'booking')
+      .catch(() => undefined);
 
     const settings = await this.settings.get();
 

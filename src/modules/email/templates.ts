@@ -11,7 +11,7 @@ const BRAND = '#0064ff';
 const INK = '#0e0f31';
 const COMPANY_NAME = 'TechClues';
 /** Placeholder — replace with the real registered address (flagged in the handover report). */
-const COMPANY_ADDRESS = 'TechClues, Birmingham, United Kingdom';
+const COMPANY_ADDRESS = 'TechClues, 125 Hazelville Road, West Midlands, United Kingdom';
 
 export function escapeHtml(input: string): string {
   return input

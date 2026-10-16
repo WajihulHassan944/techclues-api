@@ -8,6 +8,7 @@ import { SettingsService } from '../settings/settings.service';
 import { EmailService } from '../email/email.service';
 import { PusherService } from '../pusher/pusher.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { NewsletterService } from '../newsletter/newsletter.service';
 import { fillTemplate, firstName } from '../../common/constants/defaults';
 import { autoReplyEmail, enquiryAdminEmail, enquiryReplyEmail } from '../email/templates';
 
@@ -24,6 +25,8 @@ export interface CreatePublicEnquiryInput {
   utm?: Record<string, string>;
   referrer?: string;
   ip?: string;
+  /** False when the visitor explicitly declined marketing emails on the form. */
+  marketingConsent?: boolean;
 }
 
 @Injectable()
@@ -36,6 +39,7 @@ export class EnquiriesService {
     private readonly email: EmailService,
     private readonly pusher: PusherService,
     private readonly notifications: NotificationsService,
+    private readonly newsletter: NewsletterService,
   ) {}
 
   async createPublic(input: CreatePublicEnquiryInput) {
@@ -50,6 +54,12 @@ export class EnquiriesService {
     });
 
     const settings = await this.settings.get();
+
+    if (!blocked && input.marketingConsent !== false) {
+      this.newsletter
+        .autoAdd(enquiry.email, firstName(enquiry.name), 'contact')
+        .catch(() => undefined);
+    }
 
     if (!blocked) {
       await this.pusher.trigger('enquiry.created', {

@@ -61,6 +61,34 @@ describe('TechClues API (e2e)', () => {
       expect(res.body.id).toBeDefined();
     });
 
+    it('adds people who contact us to the newsletter automatically', async () => {
+      await request(server)
+        .post('/api/public/contact')
+        .send({ name: 'Nia Newsletter', email: 'nia-auto@example.com', message: 'Hello' })
+        .expect(201);
+      await request(server)
+        .post('/api/public/staff-augmentation')
+        .send({
+          firstName: 'No',
+          lastName: 'Thanks',
+          email: 'no-marketing@example.com',
+          need: 'A full team',
+          consent: true,
+          marketingConsent: false,
+        })
+        .expect(201);
+      const res = await request(server)
+        .get('/api/admin/newsletter')
+        .query({ pageSize: 1000 })
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      const emails = res.body.items.map(
+        (x: { email: string; source: string }) => `${x.email}:${x.source}`,
+      );
+      expect(emails).toContain('nia-auto@example.com:contact');
+      expect(emails.some((e: string) => e.startsWith('no-marketing@example.com'))).toBe(false);
+    });
+
     it('rejects a contact submission with the honeypot filled in', async () => {
       await request(server)
         .post('/api/public/contact')

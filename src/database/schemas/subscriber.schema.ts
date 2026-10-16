@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 export const SUB_STATUSES = ['subscribed', 'unsubscribed', 'bounced'] as const;
 export type SubStatus = (typeof SUB_STATUSES)[number];
 
-export const SUB_SOURCES = ['footer', 'blog', 'manual', 'import'] as const;
+export const SUB_SOURCES = ['footer', 'blog', 'manual', 'import', 'contact', 'booking'] as const;
 export type SubSource = (typeof SUB_SOURCES)[number];
 
 @Schema({ timestamps: true })

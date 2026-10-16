@@ -75,7 +75,7 @@ export class PublicEnquiriesController {
       email: dto.email,
       company: dto.company,
       phone: dto.phone,
-      subject: `ZERO.ONE brief from ${dto.name}`,
+      subject: `BUILD.ONE brief from ${dto.name}`,
       message: dto.idea,
       ip: req.ip,
       referrer: req.headers.referer,
@@ -191,6 +191,7 @@ export class PublicEnquiriesController {
     const name = `${dto.firstName} ${dto.lastName}`.trim();
     const enquiry = await this.enquiries.createPublic({
       source: 'staff-augmentation',
+      marketingConsent: dto.marketingConsent,
       name,
       email: dto.email,
       company: dto.company,
@@ -215,6 +216,7 @@ export class PublicEnquiriesController {
     const name = `${dto.firstName} ${dto.lastName}`.trim();
     const enquiry = await this.enquiries.createPublic({
       source: 'game-development',
+      marketingConsent: dto.marketingConsent,
       name,
       email: dto.email,
       company: dto.company,

@@ -2,7 +2,7 @@
   "mvp-development": [
     {
       "q": "How much does an MVP cost?",
-      "a": "A Validation MVP starts from £2,500, a Lean MVP from £5,000 and a Custom or SaaS platform from £10,000. Your price is agreed before any work starts. Not ready for an MVP yet? ZERO.ONE builds and tests your core feature in a week for £499. Our cost calculator gives you an instant estimate."
+      "a": "A Validation MVP starts from £2,500, a Lean MVP from £5,000 and a Custom or SaaS platform from £10,000. Your price is agreed before any work starts. Not ready for an MVP yet? BUILD.ONE builds and tests your core feature in a week for £499. Our cost calculator gives you an instant estimate."
     },
     {
       "q": "How long does it take?",
@@ -390,7 +390,7 @@
     },
     {
       "q": "What do I earn?",
-      "a": "10% of our fees up to £20,000, and 5% of anything above that, up to £5,000 a referral. For monthly services, the same on the first 6 months' fees. A ZERO.ONE earns a flat £50. Pro partners, with 3 or more paid referrals in 12 months, earn 12.5% on the first £20,000. Further work from the same client within 12 months of their first payment earns 5%."
+      "a": "10% of our fees up to £20,000, and 5% of anything above that, up to £5,000 a referral. For monthly services, the same on the first 6 months' fees. A BUILD.ONE earns a flat £50. Pro partners, with 3 or more paid referrals in 12 months, earn 12.5% on the first £20,000. Further work from the same client within 12 months of their first payment earns 5%."
     },
     {
       "q": "How do I register a referral?",
@@ -448,7 +448,7 @@
     },
     {
       "q": "Do you work with clients outside the UK?",
-      "a": "Yes. We're based in Birmingham and work with founders elsewhere over calls and shared documents; the process doesn't change."
+      "a": "Yes. We're based in West Midlands and work with founders elsewhere over calls and shared documents; the process doesn't change."
     },
     {
       "q": "How do I know whether to build an MVP or the full product?",
@@ -692,7 +692,7 @@
   "faq-working-together": [
     {
       "q": "Where are you based?",
-      "a": "Birmingham, at 125 Hazelville Road. We work with clients across the UK and beyond, and we're happy to meet in person if you're nearby."
+      "a": "West Midlands, at 125 Hazelville Road. We work with clients across the UK and beyond, and we're happy to meet in person if you're nearby."
     },
     {
       "q": "Who will I work with day to day?",
@@ -785,12 +785,12 @@
       "a": "It can. Innovation funders usually want evidence that people need what you're building, and a tested prototype with findings from real users gives you something concrete to point to. It doesn't guarantee funding: the funder decides. If you'd like help with the application itself, we offer grant application support too."
     },
     {
-      "q": "Is ZERO.ONE a discount?",
+      "q": "Is BUILD.ONE a discount?",
       "a": "No. It's a smaller product: one feature, one week and one question answered, so you know whether to invest in a full MVP."
     },
     {
       "q": "What counts as the core feature?",
-      "a": "The one thing your product must do for someone to care. If it needs logins, payments or an admin panel to work, it's bigger than ZERO.ONE, and we'll suggest a Validation or Lean MVP instead."
+      "a": "The one thing your product must do for someone to care. If it needs logins, payments or an admin panel to work, it's bigger than BUILD.ONE, and we'll suggest a Validation or Lean MVP instead."
     },
     {
       "q": "Who are the testers?",
@@ -806,7 +806,7 @@
     },
     {
       "q": "Why only four a month?",
-      "a": "Each ZERO.ONE gets a full week of focus, so we take on one a week."
+      "a": "Each BUILD.ONE gets a full week of focus, so we take on one a week."
     }
   ],
   "calculator": [
@@ -838,7 +838,7 @@
   "home": [
     {
       "q": "What does TechClues do?",
-      "a": "We're an MVP studio in Birmingham. We help founders validate ideas, then design, build and scale them."
+      "a": "We're an MVP studio in West Midlands. We help founders validate ideas, then design, build and scale them."
     },
     {
       "q": "How much does an MVP cost?",

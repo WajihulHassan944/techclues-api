@@ -24,6 +24,8 @@ const SOURCE_LABELS: Record<SubSource, string> = {
   blog: 'Blog',
   manual: 'Manual',
   import: 'Import',
+  contact: 'Contact form',
+  booking: 'Booking',
 };
 const STATUS_LABELS: Record<SubStatus, string> = {
   subscribed: 'Subscribed',
@@ -95,6 +97,30 @@ export class NewsletterService {
     });
     await this.activity.log('newsletter', `${normalized} subscribed via ${source}`);
     return '';
+  }
+
+  /**
+   * Quietly adds someone who contacted us (an enquiry or a booking) to the newsletter so we can share
+   * updates later. Never re-subscribes anyone who has unsubscribed, and sends no email or admin alert.
+   */
+  async autoAdd(email: string, name: string | undefined, source: SubSource): Promise<void> {
+    const normalized = email.trim().toLowerCase();
+    if (!EMAIL_RE.test(normalized)) return;
+    const existing = await this.model.findOne({ email: normalized });
+    if (existing) return;
+    await this.model.create({
+      email: normalized,
+      name,
+      source,
+      status: 'subscribed',
+      at: new Date(),
+      unsubscribeToken: randomBytes(24).toString('hex'),
+    });
+    await this.email.upsertContact(normalized, { FIRSTNAME: name });
+    await this.activity.log(
+      'newsletter',
+      `${normalized} added to the newsletter after contacting us`,
+    );
   }
 
   async addMany(emails: string[], source: SubSource) {

@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 export const BOOKING_STATUSES = ['confirmed', 'completed', 'cancelled', 'no-show'] as const;
 export type BookingStatus = (typeof BOOKING_STATUSES)[number];
 
-export const BOOKING_VIAS = ['Book a call', 'ZERO.ONE brief'] as const;
+export const BOOKING_VIAS = ['Book a call', 'BUILD.ONE brief', 'ZERO.ONE brief'] as const;
 
 @Schema({ _id: true, timestamps: false })
 class Note {

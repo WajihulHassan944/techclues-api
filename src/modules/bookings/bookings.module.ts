@@ -11,6 +11,7 @@ import { SettingsModule } from '../settings/settings.module';
 import { EmailModule } from '../email/email.module';
 import { PusherModule } from '../pusher/pusher.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { NewsletterModule } from '../newsletter/newsletter.module';
 import { BookingsService } from './bookings.service';
 import { PublicBookingsController } from './public-bookings.controller';
 import { AdminBookingsController } from './admin-bookings.controller';
@@ -26,6 +27,7 @@ import { AdminBookingsController } from './admin-bookings.controller';
     EmailModule,
     PusherModule,
     NotificationsModule,
+    NewsletterModule,
   ],
   providers: [BookingsService],
   controllers: [PublicBookingsController, AdminBookingsController],
