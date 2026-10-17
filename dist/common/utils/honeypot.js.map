@@ -1,0 +1,1 @@
+{"version":3,"file":"honeypot.js","sourceRoot":"","sources":["../../../src/common/utils/honeypot.ts"],"names":[],"mappings":";;AAGA,sCAKC;AARD,2CAAqD;AAGrD,SAAgB,aAAa,CAAC,KAAc;IAC1C,IAAI,OAAO,KAAK,KAAK,QAAQ,IAAI,KAAK,CAAC,IAAI,EAAE,CAAC,MAAM,GAAG,CAAC,EAAE,CAAC;QAEzD,MAAM,IAAI,4BAAmB,CAAC,8BAA8B,CAAC,CAAC;IAChE,CAAC;AACH,CAAC"}

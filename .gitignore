@@ -12,3 +12,9 @@ tsconfig.build.tsbuildinfo
 
 .vercel
 .env*
+
+# Tracked deliberately: this shared-hosting deployment has no way to run a
+# build step on the server, so the compiled output is committed and pulled
+# directly instead.
+!dist/
+!dist/**
