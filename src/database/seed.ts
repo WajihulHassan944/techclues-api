@@ -75,7 +75,7 @@ async function main() {
   // --- Settings ---
   await Settings.deleteMany({});
   await Settings.create({
-    recipients: ['techcluesltd@gmail.com'],
+    recipients: ['info@techclues.co.uk'],
     events: { enquiry: true, booking: true, cancelled: true, subscriber: false, summary: true },
     summaryTime: '08:00',
     fromName: 'TechClues',

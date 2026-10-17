@@ -1,6 +1,6 @@
 import { SourceKey } from '../../database/schemas/enquiry.schema';
 
-export const SIGNATURE = 'Best wishes,\nTechClues team\ntechcluesltd@gmail.com\n+44 7472 411699';
+export const SIGNATURE = 'Best wishes,\nTechClues team\ninfo@techclues.co.uk\n+44 7472 411699';
 
 export type DefaultTemplate = { id: string; label: string; body: string; sources?: SourceKey[] };
 

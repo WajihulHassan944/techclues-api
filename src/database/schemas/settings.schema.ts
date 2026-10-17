@@ -50,7 +50,7 @@ class Retention {
 /** Singleton document — there is always exactly one Settings row. */
 @Schema({ timestamps: true })
 export class Settings extends Document {
-  @Prop({ type: [String], default: ['techcluesltd@gmail.com'] })
+  @Prop({ type: [String], default: ['info@techclues.co.uk'] })
   recipients!: string[];
 
   @Prop({ type: NotificationEvents, default: {} })

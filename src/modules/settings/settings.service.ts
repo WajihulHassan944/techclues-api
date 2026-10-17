@@ -16,7 +16,7 @@ export class SettingsService {
     let settings = await this.model.findOne();
     if (!settings) {
       settings = await this.model.create({
-        recipients: ['techcluesltd@gmail.com'],
+        recipients: ['info@techclues.co.uk'],
         events: { enquiry: true, booking: true, cancelled: true, subscriber: false, summary: true },
         summaryTime: '08:00',
         fromName: 'TechClues',

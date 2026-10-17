@@ -14,8 +14,8 @@ import {
 
 const settings = {
   fromName: 'TechClues',
-  recipients: ['techcluesltd@gmail.com'],
-  signature: 'Best wishes,\nTechClues team\ntechcluesltd@gmail.com\n+44 7472 411699',
+  recipients: ['info@techclues.co.uk'],
+  signature: 'Best wishes,\nTechClues team\ninfo@techclues.co.uk\n+44 7472 411699',
 };
 
 const sampleEnquiry = {
