@@ -30,6 +30,13 @@ export class SettingsService {
         calculatorPricing: DEFAULT_CALCULATOR_PRICING,
         buildOnePrice: DEFAULT_BUILD_ONE_PRICE,
       });
+    } else if (!settings.calculatorPricing?.features?.length) {
+      // Backfills an existing Settings row created before pricing existed on the schema — the
+      // subdocument's own `default: {}` leaves its array fields empty rather than populated,
+      // so a plain schema default only covers a brand-new document, not this case.
+      settings.calculatorPricing = DEFAULT_CALCULATOR_PRICING;
+      if (!settings.buildOnePrice?.amount) settings.buildOnePrice = DEFAULT_BUILD_ONE_PRICE;
+      await settings.save();
     }
     return settings;
   }
