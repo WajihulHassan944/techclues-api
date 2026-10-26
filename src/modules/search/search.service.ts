@@ -5,6 +5,7 @@ import { Enquiry } from '../../database/schemas/enquiry.schema';
 import { Booking } from '../../database/schemas/booking.schema';
 import { Subscriber } from '../../database/schemas/subscriber.schema';
 import { BlogPost } from '../../database/schemas/blog.schema';
+import { CaseStudy } from '../../database/schemas/case-study.schema';
 
 const LIMIT = 5;
 
@@ -19,14 +20,15 @@ export class SearchService {
     @InjectModel(Booking.name) private readonly bookingModel: Model<Booking>,
     @InjectModel(Subscriber.name) private readonly subscriberModel: Model<Subscriber>,
     @InjectModel(BlogPost.name) private readonly postModel: Model<BlogPost>,
+    @InjectModel(CaseStudy.name) private readonly caseStudyModel: Model<CaseStudy>,
   ) {}
 
   async search(q: string) {
     const term = q.trim();
-    if (!term) return { enquiries: [], bookings: [], subscribers: [], posts: [] };
+    if (!term) return { enquiries: [], bookings: [], subscribers: [], posts: [], caseStudies: [] };
     const re = new RegExp(escapeRegex(term), 'i');
 
-    const [enquiries, bookings, subscribers, posts] = await Promise.all([
+    const [enquiries, bookings, subscribers, posts, caseStudies] = await Promise.all([
       this.enquiryModel
         .find({ $or: [{ name: re }, { email: re }, { subject: re }] })
         .sort({ received: -1 })
@@ -47,6 +49,12 @@ export class SearchService {
         .lean(),
       this.postModel
         .find({ title: re })
+        .sort({ updatedAt: -1 })
+        .limit(LIMIT)
+        .select('title slug status')
+        .lean(),
+      this.caseStudyModel
+        .find({ $or: [{ title: re }, { client: re }] })
         .sort({ updatedAt: -1 })
         .limit(LIMIT)
         .select('title slug status')
@@ -75,6 +83,12 @@ export class SearchService {
         title: p.title,
         subtitle: p.status,
         slug: p.slug,
+      })),
+      caseStudies: caseStudies.map((c) => ({
+        id: String(c._id),
+        title: c.title,
+        subtitle: c.status,
+        slug: c.slug,
       })),
     };
   }

@@ -3,6 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Settings } from '../../database/schemas/settings.schema';
 import { DEFAULT_TEMPLATES, SIGNATURE } from '../../common/constants/defaults';
+import {
+  DEFAULT_CALCULATOR_PRICING,
+  DEFAULT_BUILD_ONE_PRICE,
+} from '../../common/constants/pricing';
 import { ActivityService } from '../activity/activity.service';
 
 @Injectable()
@@ -23,6 +27,8 @@ export class SettingsService {
         signature: SIGNATURE,
         templates: DEFAULT_TEMPLATES,
         retention: { spamDays: 30, enquiryMonths: 0 },
+        calculatorPricing: DEFAULT_CALCULATOR_PRICING,
+        buildOnePrice: DEFAULT_BUILD_ONE_PRICE,
       });
     }
     return settings;

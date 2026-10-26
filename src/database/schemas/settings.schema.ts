@@ -47,6 +47,86 @@ class Retention {
   enquiryMonths!: number;
 }
 
+/** One line of the MVP cost calculator's goal/platform/pace steps — a multiplier applied to the feature total. */
+@Schema({ _id: false })
+export class CalculatorOption {
+  @Prop({ required: true })
+  id!: string;
+
+  @Prop({ required: true })
+  name!: string;
+
+  @Prop({ required: true })
+  text!: string;
+
+  @Prop({ required: true })
+  multiplier!: number;
+}
+export const CalculatorOptionSchema = SchemaFactory.createForClass(CalculatorOption);
+
+/** One selectable feature in the MVP cost calculator, with its own cost and build time. */
+@Schema({ _id: false })
+export class CalculatorFeature {
+  @Prop({ required: true })
+  id!: string;
+
+  @Prop({ required: true })
+  name!: string;
+
+  @Prop({ required: true })
+  baseCost!: number;
+
+  @Prop({ required: true })
+  weeks!: number;
+}
+export const CalculatorFeatureSchema = SchemaFactory.createForClass(CalculatorFeature);
+
+@Schema({ _id: false })
+class CalculatorFloors {
+  @Prop({ default: 5000 })
+  mvp!: number;
+
+  @Prop({ default: 10000 })
+  full!: number;
+
+  @Prop({ default: 0 })
+  update!: number;
+}
+
+/** The full pricing model behind /mvp-cost-calculator — mirrors lib/calculator.ts on the frontend. */
+@Schema({ _id: false })
+export class CalculatorPricing {
+  @Prop({ type: [CalculatorOptionSchema], default: [] })
+  goals!: CalculatorOption[];
+
+  @Prop({ type: [CalculatorOptionSchema], default: [] })
+  platforms!: CalculatorOption[];
+
+  @Prop({ type: [CalculatorFeatureSchema], default: [] })
+  features!: CalculatorFeature[];
+
+  @Prop({ type: [CalculatorOptionSchema], default: [] })
+  paces!: CalculatorOption[];
+
+  @Prop({ default: 2500 })
+  setupFee!: number;
+
+  @Prop({ type: CalculatorFloors, default: {} })
+  floors!: CalculatorFloors;
+}
+export const CalculatorPricingSchema = SchemaFactory.createForClass(CalculatorPricing);
+
+/** The flat BUILD.ONE sprint price shown in nav, footer and the /zero-one page. */
+@Schema({ _id: false })
+export class BuildOnePrice {
+  @Prop({ default: 499 })
+  amount!: number;
+
+  @Prop({ default: '7 days' })
+  durationLabel!: string;
+}
+export const BuildOnePriceSchema = SchemaFactory.createForClass(BuildOnePrice);
+
 /** Singleton document — there is always exactly one Settings row. */
 @Schema({ timestamps: true })
 export class Settings extends Document {
@@ -70,6 +150,12 @@ export class Settings extends Document {
 
   @Prop({ type: Retention, default: {} })
   retention!: Retention;
+
+  @Prop({ type: CalculatorPricing, default: {} })
+  calculatorPricing!: CalculatorPricing;
+
+  @Prop({ type: BuildOnePrice, default: {} })
+  buildOnePrice!: BuildOnePrice;
 
   @Prop()
   passwordChangedAt?: Date;

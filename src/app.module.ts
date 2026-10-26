@@ -13,6 +13,8 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { EnquiriesModule } from './modules/enquiries/enquiries.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { BlogModule } from './modules/blog/blog.module';
+import { CaseStudyModule } from './modules/case-studies/case-study.module';
+import { FooterLinkModule } from './modules/footer-links/footer-link.module';
 import { FaqModule } from './modules/faq/faq.module';
 import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { PusherModule } from './modules/pusher/pusher.module';
@@ -50,6 +52,8 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     EnquiriesModule,
     BookingsModule,
     BlogModule,
+    CaseStudyModule,
+    FooterLinkModule,
     FaqModule,
     NewsletterModule,
     PusherModule,

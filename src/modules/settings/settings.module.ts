@@ -4,6 +4,7 @@ import { Settings, SettingsSchema } from '../../database/schemas/settings.schema
 import { ActivityModule } from '../activity/activity.module';
 import { SettingsService } from './settings.service';
 import { SettingsController } from './settings.controller';
+import { PublicPricingController } from './public-pricing.controller';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { SettingsController } from './settings.controller';
     ActivityModule,
   ],
   providers: [SettingsService],
-  controllers: [SettingsController],
+  controllers: [SettingsController, PublicPricingController],
   exports: [SettingsService],
 })
 export class SettingsModule {}
