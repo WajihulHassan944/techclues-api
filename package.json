@@ -19,6 +19,7 @@
     "seed": "ts-node -r tsconfig-paths/register src/database/seed.ts",
     "migrate:faqs": "ts-node -r tsconfig-paths/register src/database/migrate-faqs.ts",
     "seed:content": "ts-node -r tsconfig-paths/register src/database/seed-content.ts",
+    "seed:social-links": "ts-node -r tsconfig-paths/register src/database/seed-social-links.ts",
     "email:preview": "ts-node -r tsconfig-paths/register src/scripts/email-preview.ts",
     "vercel-build": "nest build && node -e \"require('fs').cpSync('dist','api/dist',{recursive:true})\""
   },

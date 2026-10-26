@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export const FOOTER_GROUPS = ['services', 'company', 'sectors', 'legal'] as const;
+export const FOOTER_GROUPS = ['services', 'company', 'sectors', 'social', 'legal'] as const;
 export type FooterGroup = (typeof FOOTER_GROUPS)[number];
 
 @Schema({ timestamps: true })
