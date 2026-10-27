@@ -19,6 +19,7 @@ import { FaqModule } from './modules/faq/faq.module';
 import { TestimonialModule } from './modules/testimonials/testimonial.module';
 import { SeoModule } from './modules/seo/seo.module';
 import { UsersModule } from './modules/users/users.module';
+import { ServiceModule } from './modules/services/service.module';
 import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { PusherModule } from './modules/pusher/pusher.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
@@ -61,6 +62,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     TestimonialModule,
     SeoModule,
     UsersModule,
+    ServiceModule,
     NewsletterModule,
     PusherModule,
     CloudinaryModule,
