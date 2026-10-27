@@ -115,7 +115,7 @@ export const CASE_STUDIES: SeedCaseStudy[] = [
     excerpt:
       'A combined ecommerce and content platform for GolfsZone, serving golf equipment and information to one audience.',
     body: '<p>GolfsZone needed a site that worked as both a store and a resource — somewhere golfers could buy equipment and find genuinely useful information in the same place, rather than treating content and commerce as two separate problems.</p><h2>The approach</h2><p>We built a platform that ties a product catalogue to related content and guidance, so a visitor researching equipment can move straight into a purchase without leaving the context that brought them there in the first place.</p><h2>What shipped</h2><p>An ecommerce platform with integrated content pages, product catalogue, and checkout, built to serve both the buying and the research side of a golfer&apos;s visit.</p>',
-    cover: '/images/industries/retail.jpg',
+    cover: '/images/services/apps.jpg',
     coverAlt: 'Golf equipment laid out for an ecommerce product shoot',
     results: [
       { value: 'Content + commerce', label: 'in a single platform' },
@@ -140,7 +140,7 @@ export const CASE_STUDIES: SeedCaseStudy[] = [
     excerpt:
       'Building the first platform version for EHB, an early-stage blockchain-based property exchange concept.',
     body: '<p>EHB set out to build a property exchange concept with its own blockchain-based trading layer — an ambitious, technically unusual brief that needed a working first version to prove the model before any further investment.</p><h2>The approach</h2><p>Rather than trying to build the full exchange vision in one go, we scoped a first version around the core mechanic the whole concept depended on, so the team could test the model with real usage before committing further engineering budget to the rest of the platform.</p><h2>What shipped</h2><p>A working first version of the platform&apos;s core exchange mechanic, giving the EHB team a real product to test and present rather than a concept on paper.</p>',
-    cover: '/images/industries/saas.jpg',
+    cover: '/images/services/mvp.jpg',
     coverAlt: 'Abstract platform dashboard screens',
     results: [
       { value: 'MVP', label: 'de-risking a novel, technical concept' },
@@ -191,7 +191,7 @@ export const CASE_STUDIES: SeedCaseStudy[] = [
     excerpt:
       'A website with online appointment booking for Pathways Dental, a Canadian dental clinic.',
     body: '<p>Pathways Dental needed a clean, trustworthy website that made it easy for both new and existing patients to find the right service and book an appointment directly, without relying on phone calls during business hours.</p><h2>The approach</h2><p>The site was structured around services and a simple booking flow, built to work well on mobile given how many patients search for and book appointments from their phone.</p><h2>What shipped</h2><p>A responsive clinic website with service information and online appointment booking, giving the practice a self-serve booking option alongside its existing phone line.</p>',
-    cover: '/images/industries/healthcare.jpg',
+    cover: '/images/company/team-meeting.jpg',
     coverAlt: 'A dental clinic reception area',
     results: [
       { value: 'Mobile-first', label: 'booking flow for on-the-go patients' },
@@ -216,7 +216,7 @@ export const CASE_STUDIES: SeedCaseStudy[] = [
     excerpt:
       'Validating a same-day delivery dispatch model with a focused MVP, before committing to a full fleet management build.',
     body: '<p>An early-stage logistics startup had a clear hypothesis — that small local businesses would pay for reliable same-day delivery dispatch without needing their own fleet — but no way to test it without a working product in drivers&apos; and customers&apos; hands.</p><h2>The approach</h2><p>Rather than building a full fleet management platform upfront, we scoped an MVP around the single loop that mattered: a business requests a delivery, a driver accepts it, the customer tracks it to completion. Everything else — driver payouts, route optimisation, reporting — was deliberately left for later.</p><h2>What shipped</h2><p>A working dispatch MVP covering request, driver matching and live tracking, built in weeks rather than months, giving the founding team real usage data to decide what to build next.</p>',
-    cover: '/images/industries/logistics.jpg',
+    cover: '/images/services/rescue.jpg',
     coverAlt: 'A delivery driver loading a van',
     results: [
       { value: 'Weeks, not months', label: 'from brief to a testable product' },
@@ -242,7 +242,7 @@ export const CASE_STUDIES: SeedCaseStudy[] = [
     excerpt:
       'Cutting manual CV screening time for a staffing agency with an MVP that triages applicants before a recruiter reviews them.',
     body: '<p>A staffing agency placing high volumes of candidates was losing hours each week to manual first-pass CV screening, time that recruiters could otherwise spend on the calls and placements that actually drive revenue.</p><h2>The approach</h2><p>We built a focused screening tool that parses incoming applications against a role&apos;s requirements and surfaces a ranked shortlist for a recruiter to review, rather than attempting to automate the hiring decision itself — the judgement stays with the recruiter, the triage is what gets automated.</p><h2>What shipped</h2><p>An applicant screening MVP integrated into the agency&apos;s existing intake process, cutting the time recruiters spent on first-pass review before shortlisting.</p>',
-    cover: '/images/industries/recruitment.jpg',
+    cover: '/images/services/brand.jpg',
     coverAlt: 'A recruiter reviewing applications on a laptop',
     results: [
       { value: 'Ranked shortlists', label: 'instead of manual first-pass review' },
@@ -267,7 +267,7 @@ export const CASE_STUDIES: SeedCaseStudy[] = [
     excerpt:
       'An MVP cohort platform helping an online education provider run structured, scheduled courses instead of ad hoc content delivery.',
     body: '<p>An online education provider had been running cohort-based courses through a patchwork of spreadsheets, email and generic video calls, which worked at a small scale but was starting to break down as cohort sizes grew.</p><h2>The approach</h2><p>We built a cohort platform around the structure a course actually needs: scheduled sessions, cohort-specific materials, and progress tracking, so instructors could run a course rather than administer one manually across five different tools.</p><h2>What shipped</h2><p>A cohort management MVP with scheduling, materials and progress tracking, replacing the provider&apos;s manual, spreadsheet-driven process for running a course.</p>',
-    cover: '/images/industries/education.jpg',
+    cover: '/images/services/lowcode.jpg',
     coverAlt: 'An online course dashboard on a laptop screen',
     results: [
       { value: 'One platform', label: 'replacing five disconnected tools' },
