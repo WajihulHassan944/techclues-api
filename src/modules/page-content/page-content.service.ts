@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PageContent } from '../../database/schemas/page-content.schema';
@@ -18,6 +18,11 @@ export class PageContentService {
 
   /** Upserts the given keys without clobbering keys this call doesn't mention. */
   async update(page: string, patch: Record<string, string>) {
+    for (const key of Object.keys(patch)) {
+      if (key.includes('.')) {
+        throw new BadRequestException(`Block key "${key}" cannot contain "." — Mongo treats it as nesting.`);
+      }
+    }
     const doc = await this.model.findOneAndUpdate(
       { page },
       { $set: Object.fromEntries(Object.entries(patch).map(([k, v]) => [`blocks.${k}`, v])) },
