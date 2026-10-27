@@ -23,6 +23,7 @@
     "seed:super-admin": "ts-node -r tsconfig-paths/register src/database/seed-super-admin.ts",
     "seed:testimonials": "ts-node -r tsconfig-paths/register src/database/seed-testimonials.ts",
     "seed:services": "ts-node -r tsconfig-paths/register src/database/seed-services.ts",
+    "seed:home-content": "ts-node -r tsconfig-paths/register src/database/seed-home-content.ts",
     "email:preview": "ts-node -r tsconfig-paths/register src/scripts/email-preview.ts",
     "vercel-build": "nest build && node -e \"require('fs').cpSync('dist','api/dist',{recursive:true})\""
   },

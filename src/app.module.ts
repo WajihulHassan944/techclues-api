@@ -20,6 +20,7 @@ import { TestimonialModule } from './modules/testimonials/testimonial.module';
 import { SeoModule } from './modules/seo/seo.module';
 import { UsersModule } from './modules/users/users.module';
 import { ServiceModule } from './modules/services/service.module';
+import { PageContentModule } from './modules/page-content/page-content.module';
 import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { PusherModule } from './modules/pusher/pusher.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
@@ -63,6 +64,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     SeoModule,
     UsersModule,
     ServiceModule,
+    PageContentModule,
     NewsletterModule,
     PusherModule,
     CloudinaryModule,
