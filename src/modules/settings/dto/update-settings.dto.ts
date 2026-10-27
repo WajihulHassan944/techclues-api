@@ -78,6 +78,15 @@ export class BuildOnePriceDto {
   @IsString() @IsOptional() durationLabel?: string;
 }
 
+export class SeoGlobalsDto {
+  @IsString() @IsOptional() googleAnalyticsId?: string;
+  @IsString() @IsOptional() googleSearchConsoleVerification?: string;
+  @IsString() @IsOptional() metaPixelId?: string;
+  @IsString() @IsOptional() defaultTitle?: string;
+  @IsString() @IsOptional() defaultDescription?: string;
+  @IsString() @IsOptional() defaultOgImage?: string;
+}
+
 export class UpdateSettingsDto {
   @IsArray() @IsOptional() recipients?: string[];
 
@@ -110,4 +119,9 @@ export class UpdateSettingsDto {
   @Type(() => BuildOnePriceDto)
   @IsOptional()
   buildOnePrice?: BuildOnePriceDto;
+
+  @ValidateNested()
+  @Type(() => SeoGlobalsDto)
+  @IsOptional()
+  seo?: SeoGlobalsDto;
 }

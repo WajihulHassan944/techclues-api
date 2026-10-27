@@ -7,6 +7,7 @@ import {
   DEFAULT_CALCULATOR_PRICING,
   DEFAULT_BUILD_ONE_PRICE,
 } from '../../common/constants/pricing';
+import { DEFAULT_SEO_GLOBALS } from '../../common/constants/seo-defaults';
 import { ActivityService } from '../activity/activity.service';
 
 @Injectable()
@@ -29,14 +30,23 @@ export class SettingsService {
         retention: { spamDays: 30, enquiryMonths: 0 },
         calculatorPricing: DEFAULT_CALCULATOR_PRICING,
         buildOnePrice: DEFAULT_BUILD_ONE_PRICE,
+        seo: DEFAULT_SEO_GLOBALS,
       });
-    } else if (!settings.calculatorPricing?.features?.length) {
-      // Backfills an existing Settings row created before pricing existed on the schema — the
+    } else {
+      let dirty = false;
+      // Backfills an existing Settings row created before pricing/seo existed on the schema — the
       // subdocument's own `default: {}` leaves its array fields empty rather than populated,
       // so a plain schema default only covers a brand-new document, not this case.
-      settings.calculatorPricing = DEFAULT_CALCULATOR_PRICING;
-      if (!settings.buildOnePrice?.amount) settings.buildOnePrice = DEFAULT_BUILD_ONE_PRICE;
-      await settings.save();
+      if (!settings.calculatorPricing?.features?.length) {
+        settings.calculatorPricing = DEFAULT_CALCULATOR_PRICING;
+        if (!settings.buildOnePrice?.amount) settings.buildOnePrice = DEFAULT_BUILD_ONE_PRICE;
+        dirty = true;
+      }
+      if (!settings.seo?.defaultTitle) {
+        settings.seo = DEFAULT_SEO_GLOBALS;
+        dirty = true;
+      }
+      if (dirty) await settings.save();
     }
     return settings;
   }

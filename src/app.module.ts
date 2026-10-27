@@ -16,6 +16,9 @@ import { BlogModule } from './modules/blog/blog.module';
 import { CaseStudyModule } from './modules/case-studies/case-study.module';
 import { FooterLinkModule } from './modules/footer-links/footer-link.module';
 import { FaqModule } from './modules/faq/faq.module';
+import { TestimonialModule } from './modules/testimonials/testimonial.module';
+import { SeoModule } from './modules/seo/seo.module';
+import { UsersModule } from './modules/users/users.module';
 import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { PusherModule } from './modules/pusher/pusher.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
@@ -55,6 +58,9 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     CaseStudyModule,
     FooterLinkModule,
     FaqModule,
+    TestimonialModule,
+    SeoModule,
+    UsersModule,
     NewsletterModule,
     PusherModule,
     CloudinaryModule,

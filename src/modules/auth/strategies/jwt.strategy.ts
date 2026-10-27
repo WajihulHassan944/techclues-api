@@ -28,10 +28,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     if (!admin || admin.tokenVersion !== payload.tokenVersion) {
       throw new UnauthorizedException('Session no longer valid');
     }
+    if (admin.blocked) throw new UnauthorizedException('Account blocked');
     if (payload.sid) {
       const session = await this.sessionModel.findById(payload.sid);
       if (!session || session.revoked) throw new UnauthorizedException('Session no longer valid');
     }
-    return { sub: payload.sub, email: payload.email, sid: payload.sid };
+    return { sub: payload.sub, email: payload.email, role: admin.role, sid: payload.sid };
   }
 }

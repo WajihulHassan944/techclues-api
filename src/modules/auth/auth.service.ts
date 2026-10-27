@@ -3,12 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
+import { authenticator } from 'otplib';
 import { Model, Types } from 'mongoose';
 import { Admin } from '../../database/schemas/admin.schema';
 import { Session } from '../../database/schemas/session.schema';
 import { ActivityService } from '../activity/activity.service';
 import { describeDevice } from '../../common/utils/user-agent';
-import { JwtPayload } from './jwt-payload.interface';
+import { JwtPayload, TwoFactorPendingPayload } from './jwt-payload.interface';
 
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
@@ -31,14 +32,17 @@ export class AuthService {
     const passwordHash = this.config.get<string>('admin.passwordHash')!;
     const existing = await this.adminModel.findOne({ email: email.toLowerCase() });
     if (!existing) {
-      await this.adminModel.create({ email: email.toLowerCase(), passwordHash });
-      this.logger.log(`Seeded admin account for ${email}`);
+      await this.adminModel.create({ email: email.toLowerCase(), passwordHash, role: 'super_admin' });
+      this.logger.log(`Seeded super admin account for ${email}`);
     }
   }
 
+  /** Checks email + password only; does not create a session. Throws if blocked/locked/invalid. */
   async validateLogin(email: string, password: string, ip?: string) {
     const admin = await this.adminModel.findOne({ email: email.toLowerCase() });
     if (!admin) throw new UnauthorizedException('Invalid email or password');
+
+    if (admin.blocked) throw new ForbiddenException('This account has been blocked.');
 
     if (admin.lockUntil && admin.lockUntil.getTime() > Date.now()) {
       const minutesLeft = Math.ceil((admin.lockUntil.getTime() - Date.now()) / 60000);
@@ -65,14 +69,55 @@ export class AuthService {
     admin.failedLoginAttempts = 0;
     admin.lockUntil = undefined;
     await admin.save();
-    await this.activity.log('security', `Signed in${ip ? ` from ${ip}` : ''}`);
     return admin;
+  }
+
+  /** Issues a short-lived token identifying an admin who passed password check but still owes a 2FA code. */
+  issueTwoFactorPendingToken(admin: Admin) {
+    return this.jwt.sign(
+      { sub: String(admin._id), type: 'twofactor-pending' } as TwoFactorPendingPayload,
+      { secret: this.config.get<string>('jwt.secret'), expiresIn: '5m' },
+    );
+  }
+
+  async verifyTwoFactorPendingToken(token: string) {
+    let payload: TwoFactorPendingPayload;
+    try {
+      payload = this.jwt.verify(token, { secret: this.config.get<string>('jwt.secret') });
+    } catch {
+      throw new UnauthorizedException('That code has expired — please sign in again');
+    }
+    if (payload.type !== 'twofactor-pending') throw new UnauthorizedException('Invalid token');
+    const admin = await this.adminModel.findById(payload.sub);
+    if (!admin || admin.blocked) throw new UnauthorizedException('Invalid or expired token');
+    return admin;
+  }
+
+  verifyTotp(admin: Admin, code: string) {
+    if (!admin.twoFactorSecret) return false;
+    return authenticator.check(code.replace(/\s+/g, ''), admin.twoFactorSecret);
+  }
+
+  async consumeRecoveryCode(admin: Admin, code: string) {
+    const normalized = code.trim().toLowerCase();
+    const idx = admin.twoFactorRecoveryCodes.findIndex((c) => c === normalized);
+    if (idx === -1) return false;
+    admin.twoFactorRecoveryCodes.splice(idx, 1);
+    await admin.save();
+    return true;
+  }
+
+  async completeLogin(admin: Admin, ip: string | undefined) {
+    await this.activity.log('security', `Signed in${ip ? ` from ${ip}` : ''}`);
+    admin.lastLoginAt = new Date();
+    await admin.save();
   }
 
   issueTokens(admin: Admin, sid: string) {
     const basePayload = {
       sub: String(admin._id),
       email: admin.email,
+      role: admin.role,
       tokenVersion: admin.tokenVersion,
       sid,
     };

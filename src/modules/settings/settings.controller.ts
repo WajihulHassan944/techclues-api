@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { Settings } from '../../database/schemas/settings.schema';
 import { SettingsService } from './settings.service';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
@@ -15,6 +17,8 @@ export class SettingsController {
   }
 
   @Put()
+  @UseGuards(RolesGuard)
+  @Roles('super_admin', 'admin')
   update(@Body() dto: UpdateSettingsDto) {
     return this.settings.update(dto as Partial<Settings>, 'Updated settings');
   }

@@ -127,6 +127,28 @@ export class BuildOnePrice {
 }
 export const BuildOnePriceSchema = SchemaFactory.createForClass(BuildOnePrice);
 
+@Schema({ _id: false })
+export class SeoGlobals {
+  @Prop({ default: '' })
+  googleAnalyticsId!: string;
+
+  @Prop({ default: '' })
+  googleSearchConsoleVerification!: string;
+
+  @Prop({ default: '' })
+  metaPixelId!: string;
+
+  @Prop({ default: 'TechClues — ship a working MVP in days' })
+  defaultTitle!: string;
+
+  @Prop({ default: '' })
+  defaultDescription!: string;
+
+  @Prop({ default: '' })
+  defaultOgImage!: string;
+}
+export const SeoGlobalsSchema = SchemaFactory.createForClass(SeoGlobals);
+
 /** Singleton document — there is always exactly one Settings row. */
 @Schema({ timestamps: true })
 export class Settings extends Document {
@@ -156,6 +178,9 @@ export class Settings extends Document {
 
   @Prop({ type: BuildOnePrice, default: {} })
   buildOnePrice!: BuildOnePrice;
+
+  @Prop({ type: SeoGlobals, default: {} })
+  seo!: SeoGlobals;
 
   @Prop()
   passwordChangedAt?: Date;

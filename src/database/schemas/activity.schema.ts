@@ -9,6 +9,9 @@ export const ACTIVITY_KINDS = [
   'newsletter',
   'settings',
   'security',
+  'seo',
+  'testimonial',
+  'users',
 ] as const;
 export type ActivityKind = (typeof ACTIVITY_KINDS)[number];
 
