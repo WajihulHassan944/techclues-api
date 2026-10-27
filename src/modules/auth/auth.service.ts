@@ -4,15 +4,18 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 import { authenticator } from 'otplib';
+import { randomBytes, createHash } from 'crypto';
 import { Model, Types } from 'mongoose';
 import { Admin } from '../../database/schemas/admin.schema';
 import { Session } from '../../database/schemas/session.schema';
 import { ActivityService } from '../activity/activity.service';
+import { EmailService } from '../email/email.service';
 import { describeDevice } from '../../common/utils/user-agent';
 import { JwtPayload, TwoFactorPendingPayload } from './jwt-payload.interface';
 
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
+const RESET_TOKEN_MINUTES = 60;
 
 @Injectable()
 export class AuthService {
@@ -24,6 +27,7 @@ export class AuthService {
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
     private readonly activity: ActivityService,
+    private readonly email: EmailService,
   ) {}
 
   /** Ensures exactly one admin document exists, seeded from env on first boot. */
@@ -208,5 +212,45 @@ export class AuthService {
     if (!token) return;
     const decoded = this.jwt.decode(token) as JwtPayload | null;
     if (decoded?.sid) await this.sessionModel.updateOne({ _id: decoded.sid }, { revoked: true });
+  }
+
+  /** Always succeeds from the caller's point of view, whether or not the email matches an account. */
+  async requestPasswordReset(email: string) {
+    const admin = await this.adminModel.findOne({ email: email.toLowerCase(), blocked: false });
+    if (!admin) return;
+    const token = randomBytes(32).toString('hex');
+    admin.resetTokenHash = createHash('sha256').update(token).digest('hex');
+    admin.resetTokenExpires = new Date(Date.now() + RESET_TOKEN_MINUTES * 60_000);
+    await admin.save();
+
+    const base = process.env.FRONTEND_BASE_URL ?? 'https://techclues.co.uk';
+    const link = `${base}/admin/reset-password?token=${token}&email=${encodeURIComponent(admin.email)}`;
+    await this.email.send({
+      to: [{ email: admin.email }],
+      subject: 'Reset your TechClues admin password',
+      htmlContent: `<p>Someone requested a password reset for this admin account.</p><p><a href="${link}">Click here to set a new password</a>. This link expires in ${RESET_TOKEN_MINUTES} minutes.</p><p>If this wasn't you, you can ignore this email.</p>`,
+      textContent: `Reset your password: ${link} (expires in ${RESET_TOKEN_MINUTES} minutes)`,
+    });
+    await this.activity.log('security', `Password reset requested for ${admin.email}`);
+  }
+
+  async resetPassword(email: string, token: string, newPassword: string) {
+    const admin = await this.adminModel.findOne({ email: email.toLowerCase() });
+    const tokenHash = createHash('sha256').update(token).digest('hex');
+    if (!admin || !admin.resetTokenHash || admin.resetTokenHash !== tokenHash) {
+      throw new UnauthorizedException('Invalid or expired reset link');
+    }
+    if (!admin.resetTokenExpires || admin.resetTokenExpires.getTime() < Date.now()) {
+      throw new UnauthorizedException('That reset link has expired — request a new one');
+    }
+    admin.passwordHash = await bcrypt.hash(newPassword, 12);
+    admin.resetTokenHash = undefined;
+    admin.resetTokenExpires = undefined;
+    admin.tokenVersion += 1;
+    admin.failedLoginAttempts = 0;
+    admin.lockUntil = undefined;
+    await admin.save();
+    await this.sessionModel.updateMany({ adminId: String(admin._id) }, { revoked: true });
+    await this.activity.log('security', `Password reset for ${admin.email}`);
   }
 }

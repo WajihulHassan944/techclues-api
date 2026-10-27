@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { Admin, AdminSchema } from '../../database/schemas/admin.schema';
 import { Session, SessionSchema } from '../../database/schemas/session.schema';
 import { ActivityModule } from '../activity/activity.module';
+import { EmailModule } from '../email/email.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -18,6 +19,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     PassportModule,
     JwtModule.register({}),
     ActivityModule,
+    EmailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

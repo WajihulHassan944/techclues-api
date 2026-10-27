@@ -24,6 +24,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { TwoFactorDisableDto, TwoFactorEnableDto, TwoFactorLoginDto } from './dto/two-factor.dto';
+import { ForgotPasswordDto, ResetPasswordDto } from './dto/forgot-password.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser, AuthUser } from './current-user.decorator';
 import { Admin } from '../../database/schemas/admin.schema';
@@ -108,6 +109,22 @@ export class AuthController {
     // Match the attributes the cookie was set with (secure, sameSite, path) — some browsers
     // won't apply a clearing Set-Cookie that doesn't match, leaving the old cookie in place.
     res.clearCookie(REFRESH_COOKIE, this.cookieAttrs());
+    return { ok: true };
+  }
+
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post('forgot-password')
+  @HttpCode(200)
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    await this.auth.requestPasswordReset(dto.email);
+    return { ok: true };
+  }
+
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @Post('reset-password')
+  @HttpCode(200)
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    await this.auth.resetPassword(dto.email, dto.token, dto.newPassword);
     return { ok: true };
   }
 

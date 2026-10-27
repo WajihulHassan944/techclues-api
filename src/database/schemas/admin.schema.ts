@@ -53,6 +53,12 @@ export class Admin extends Document {
 
   @Prop()
   lastLoginAt?: Date;
+
+  @Prop()
+  resetTokenHash?: string;
+
+  @Prop()
+  resetTokenExpires?: Date;
 }
 
 export const AdminSchema = SchemaFactory.createForClass(Admin);
