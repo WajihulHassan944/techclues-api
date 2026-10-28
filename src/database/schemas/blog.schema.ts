@@ -32,10 +32,10 @@ export class BlogPost extends Document {
   @Prop({ default: '' })
   excerpt!: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   category!: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   authorId!: string;
 
   @Prop({ default: '' })
