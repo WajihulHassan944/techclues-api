@@ -12,15 +12,30 @@ import type { INestApplication } from '@nestjs/common';
 const { createApp }: { createApp: () => Promise<INestApplication> } = require('./dist/bootstrap');
 
 // Cached across warm serverless invocations so we don't rebuild the Nest app
-// (and reopen the Mongoose connection) on every request.
-let cachedApp: INestApplication | undefined;
+// (and reopen the Mongoose connection) on every request. The in-flight PROMISE
+// is cached, not just the resolved app — a burst of concurrent requests on a
+// cold start (e.g. the admin panel's parallel preload calls) would otherwise
+// each see the cache empty and independently call createApp()/init(), racing
+// each other's providers. Guards like ThrottlerGuard populate state in an
+// async onModuleInit(), so a request that slips through before that resolves
+// can hit "this.throttlers is not iterable". Awaiting one shared promise
+// guarantees every provider's onModuleInit has fully resolved before any
+// request is routed.
+let cachedAppPromise: Promise<INestApplication> | undefined;
 
 async function getApp(): Promise<INestApplication> {
-  if (!cachedApp) {
-    cachedApp = await createApp();
-    await cachedApp.init();
+  if (!cachedAppPromise) {
+    cachedAppPromise = createApp()
+      .then(async (app) => {
+        await app.init();
+        return app;
+      })
+      .catch((err) => {
+        cachedAppPromise = undefined;
+        throw err;
+      });
   }
-  return cachedApp;
+  return cachedAppPromise;
 }
 
 export default async function handler(req: Request, res: Response) {
