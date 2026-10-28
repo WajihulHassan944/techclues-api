@@ -4,6 +4,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { SeoService } from './seo.service';
 import { CreateRedirectDto, UpdateRedirectDto, UpsertSeoEntryDto } from './dto/seo.dto';
+import { CreateBacklinkDto, UpdateBacklinkDto } from './dto/backlink.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('super_admin', 'admin', 'seo_manager')
@@ -59,5 +60,30 @@ export class AdminSeoController {
   @Patch('404s/:id/resolve')
   resolve404(@Param('id') id: string) {
     return this.seo.resolve404(id);
+  }
+
+  @Get('backlinks')
+  listBacklinks() {
+    return this.seo.listBacklinks();
+  }
+
+  @Get('backlinks/stats')
+  backlinkStats() {
+    return this.seo.backlinkStats();
+  }
+
+  @Post('backlinks')
+  createBacklink(@Body() dto: CreateBacklinkDto) {
+    return this.seo.createBacklink(dto);
+  }
+
+  @Patch('backlinks/:id')
+  updateBacklink(@Param('id') id: string, @Body() dto: UpdateBacklinkDto) {
+    return this.seo.updateBacklink(id, dto);
+  }
+
+  @Delete('backlinks/:id')
+  deleteBacklink(@Param('id') id: string) {
+    return this.seo.deleteBacklink(id);
   }
 }

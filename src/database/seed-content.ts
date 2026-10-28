@@ -14,6 +14,7 @@ import { FooterLinkSchema } from './schemas/footer-link.schema';
 import { BODIES } from './seed-blog-bodies';
 import { BODIES2 } from './seed-blog-bodies-2';
 import { CASE_STUDIES } from './seed-case-studies-data';
+import { CASE_STUDIES_2 } from './seed-case-studies-data-2';
 
 // Mirrors migrate-faqs.ts: some local/corporate DNS resolvers can't do the SRV + TXT lookups
 // `mongodb+srv://` needs, even though the OS resolver handles them fine.
@@ -218,7 +219,7 @@ async function main() {
 
   // --- Case studies ---
   let caseStudiesWritten = 0;
-  for (const cs of CASE_STUDIES) {
+  for (const cs of [...CASE_STUDIES, ...CASE_STUDIES_2]) {
     await CaseStudy.updateOne(
       { slug: cs.slug },
       {

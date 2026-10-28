@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { SeoEntry } from '../../database/schemas/seo-entry.schema';
 import { Redirect } from '../../database/schemas/redirect.schema';
 import { NotFoundHit } from '../../database/schemas/not-found-hit.schema';
+import { Backlink } from '../../database/schemas/backlink.schema';
 import { BlogPost } from '../../database/schemas/blog.schema';
 import { CaseStudy } from '../../database/schemas/case-study.schema';
 import { ActivityService } from '../activity/activity.service';
 import { STATIC_ROUTES } from '../../common/constants/static-routes';
 import { scoreSeoEntry } from './seo-score';
+import { CreateBacklinkDto, UpdateBacklinkDto } from './dto/backlink.dto';
 
 const SITE_URL = process.env.SITE_URL || 'https://techclues.co.uk';
 
@@ -18,6 +20,7 @@ export class SeoService {
     @InjectModel(SeoEntry.name) private readonly seoModel: Model<SeoEntry>,
     @InjectModel(Redirect.name) private readonly redirectModel: Model<Redirect>,
     @InjectModel(NotFoundHit.name) private readonly notFoundModel: Model<NotFoundHit>,
+    @InjectModel(Backlink.name) private readonly backlinkModel: Model<Backlink>,
     @InjectModel(BlogPost.name) private readonly blogModel: Model<BlogPost>,
     @InjectModel(CaseStudy.name) private readonly caseStudyModel: Model<CaseStudy>,
     private readonly activity: ActivityService,
@@ -191,5 +194,55 @@ export class SeoService {
     lines.push('Disallow: /admin');
     lines.push(`Sitemap: ${SITE_URL}/sitemap.xml`);
     return lines.join('\n');
+  }
+
+  // --- Backlinks ---
+
+  async listBacklinks() {
+    return this.backlinkModel.find().sort({ createdAt: -1 }).lean();
+  }
+
+  async backlinkStats() {
+    const [total, live, referringDomains] = await Promise.all([
+      this.backlinkModel.countDocuments(),
+      this.backlinkModel.countDocuments({ status: 'live' }),
+      this.backlinkModel.distinct('sourceUrl').then((urls) => {
+        const domains = new Set(
+          urls.map((u) => {
+            try {
+              return new URL(u.startsWith('http') ? u : `https://${u}`).hostname.replace(/^www\./, '');
+            } catch {
+              return u;
+            }
+          }),
+        );
+        return domains.size;
+      }),
+    ]);
+    return { total, live, referringDomains };
+  }
+
+  async createBacklink(dto: CreateBacklinkDto) {
+    const link = await this.backlinkModel.create(dto);
+    await this.activity.log('seo', `Added a backlink from ${dto.sourceUrl}`);
+    return link;
+  }
+
+  async updateBacklink(id: string, dto: UpdateBacklinkDto) {
+    const link = await this.backlinkModel.findById(id);
+    if (!link) throw new NotFoundException('Backlink not found');
+    Object.assign(link, dto);
+    if (dto.status) link.lastCheckedAt = new Date();
+    await link.save();
+    await this.activity.log('seo', `Updated the backlink from ${link.sourceUrl}`);
+    return link;
+  }
+
+  async deleteBacklink(id: string) {
+    const link = await this.backlinkModel.findById(id);
+    if (!link) throw new NotFoundException('Backlink not found');
+    await link.deleteOne();
+    await this.activity.log('seo', `Deleted the backlink from ${link.sourceUrl}`);
+    return { ok: true };
   }
 }

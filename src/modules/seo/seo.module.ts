@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { SeoEntry, SeoEntrySchema } from '../../database/schemas/seo-entry.schema';
 import { Redirect, RedirectSchema } from '../../database/schemas/redirect.schema';
 import { NotFoundHit, NotFoundHitSchema } from '../../database/schemas/not-found-hit.schema';
+import { Backlink, BacklinkSchema } from '../../database/schemas/backlink.schema';
 import { BlogPost, BlogPostSchema } from '../../database/schemas/blog.schema';
 import { CaseStudy, CaseStudySchema } from '../../database/schemas/case-study.schema';
 import { ActivityModule } from '../activity/activity.module';
@@ -16,6 +17,7 @@ import { PublicSeoController } from './public-seo.controller';
       { name: SeoEntry.name, schema: SeoEntrySchema },
       { name: Redirect.name, schema: RedirectSchema },
       { name: NotFoundHit.name, schema: NotFoundHitSchema },
+      { name: Backlink.name, schema: BacklinkSchema },
       { name: BlogPost.name, schema: BlogPostSchema },
       { name: CaseStudy.name, schema: CaseStudySchema },
     ]),
