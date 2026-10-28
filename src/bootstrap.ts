@@ -44,10 +44,16 @@ export async function createApp(): Promise<INestApplication> {
   });
 
   app.setGlobalPrefix('api');
+  // whitelist alone already strips any property not declared on the DTO (no mass-assignment
+  // risk — unknown fields are silently dropped before validation, never read or stored).
+  // forbidNonWhitelisted used to also throw 400 on those extras, which broke every admin
+  // "save" flow: each provider's save() PATCHes back the full object it mapped from the
+  // server's own response (id, _id, createdAt, updatedAt, __v and all), since that's the
+  // same shape the UI already has in state — none of those are, or should need to be,
+  // declared on the Update DTOs.
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
       transform: true,
     }),
   );
