@@ -210,7 +210,7 @@ export const CASE_STUDIES: SeedCaseStudy[] = [
   {
     slug: 'logistics-dispatch-mvp',
     title: 'A same-day dispatch MVP for an early-stage logistics startup',
-    client: 'A UK logistics startup',
+    client: 'A logistics startup',
     industry: 'logistics-transportation',
     services: ['mvp-development', 'web-mobile-apps'],
     excerpt:
@@ -235,8 +235,8 @@ export const CASE_STUDIES: SeedCaseStudy[] = [
   },
   {
     slug: 'recruitment-screening-platform',
-    title: 'An applicant screening platform for a UK staffing agency',
-    client: 'A UK staffing agency',
+    title: 'An applicant screening platform for a staffing agency',
+    client: 'A staffing agency',
     industry: 'recruitment-staffing',
     services: ['mvp-development', 'ai-enablement'],
     excerpt:
@@ -256,7 +256,7 @@ export const CASE_STUDIES: SeedCaseStudy[] = [
     },
     featured: false,
     seoTitle: 'Recruitment Screening Platform Case Study | TechClues',
-    seoDescription: 'How TechClues built an applicant screening MVP for a UK staffing agency.',
+    seoDescription: 'How TechClues built an applicant screening MVP for a staffing agency.',
   },
   {
     slug: 'online-education-cohort-platform',

@@ -8,7 +8,7 @@ export const CASE_STUDIES_2: SeedCaseStudy[] = [
   {
     slug: 'fitness-coaching-mobile-app',
     title: 'A coaching app MVP for an early-stage fitness startup',
-    client: 'A UK fitness coaching startup',
+    client: 'A fitness coaching startup',
     industry: 'pre-seed-seed-startups',
     services: ['web-mobile-apps', 'ui-ux-design'],
     excerpt:
@@ -32,7 +32,7 @@ export const CASE_STUDIES_2: SeedCaseStudy[] = [
   {
     slug: 'warehouse-inventory-automation',
     title: 'Automating stock reconciliation for a manufacturing warehouse',
-    client: 'A UK manufacturing business',
+    client: 'A manufacturing business',
     industry: 'industry-manufacturing',
     services: ['ai-enablement', 'mvp-development'],
     excerpt:
@@ -80,7 +80,7 @@ export const CASE_STUDIES_2: SeedCaseStudy[] = [
   {
     slug: 'patient-intake-triage-app',
     title: 'A patient intake app that triages requests before they reach reception',
-    client: 'A UK private healthcare clinic',
+    client: 'A private healthcare clinic',
     industry: 'healthcare-medical',
     services: ['web-mobile-apps', 'ai-enablement'],
     excerpt:
@@ -104,7 +104,7 @@ export const CASE_STUDIES_2: SeedCaseStudy[] = [
   {
     slug: 'retail-loyalty-mobile-app',
     title: 'A loyalty app MVP for a multi-location retail chain',
-    client: 'A UK independent retail chain',
+    client: 'An independent retail chain',
     industry: 'retail-ecommerce',
     services: ['web-mobile-apps', 'ecommerce-marketplace-development'],
     excerpt:
@@ -128,7 +128,7 @@ export const CASE_STUDIES_2: SeedCaseStudy[] = [
   {
     slug: 'hr-onboarding-automation',
     title: 'Automating new-hire onboarding paperwork for a growing team',
-    client: 'A UK professional services firm',
+    client: 'A professional services firm',
     industry: 'recruitment-staffing',
     services: ['ai-enablement', 'low-code-no-code'],
     excerpt:
@@ -152,7 +152,7 @@ export const CASE_STUDIES_2: SeedCaseStudy[] = [
   {
     slug: 'restaurant-reservation-app',
     title: 'A booking app for a small restaurant group',
-    client: 'A UK independent restaurant group',
+    client: 'An independent restaurant group',
     industry: 'retail-ecommerce',
     services: ['web-mobile-apps', 'ui-ux-design'],
     excerpt:
@@ -176,7 +176,7 @@ export const CASE_STUDIES_2: SeedCaseStudy[] = [
   {
     slug: 'invoice-processing-automation',
     title: 'Automating supplier invoice processing for a growing firm',
-    client: 'A UK building services firm',
+    client: 'A building services firm',
     industry: 'industry-manufacturing',
     services: ['ai-enablement', 'mvp-development'],
     excerpt:
@@ -199,8 +199,8 @@ export const CASE_STUDIES_2: SeedCaseStudy[] = [
   },
   {
     slug: 'nonprofit-donor-management-platform',
-    title: 'A donor management platform for a UK charity',
-    client: 'A UK registered charity',
+    title: 'A donor management platform for a charity',
+    client: 'A registered charity',
     industry: 'education-consulting',
     services: ['mvp-development', 'low-code-no-code'],
     excerpt:
@@ -215,16 +215,16 @@ export const CASE_STUDIES_2: SeedCaseStudy[] = [
     testimonial: {
       quote: 'We finally have donor records the whole team can rely on, not just one person’s laptop.',
       author: 'Operations lead',
-      role: 'UK charity',
+      role: 'Charity',
     },
     featured: false,
     seoTitle: 'Nonprofit Donor Management Platform Case Study | TechClues',
-    seoDescription: 'How TechClues built a donor management platform for a UK charity.',
+    seoDescription: 'How TechClues built a donor management platform for a charity.',
   },
   {
     slug: 'field-service-scheduling-app',
     title: 'A scheduling app automating dispatch for field service engineers',
-    client: 'A UK field service company',
+    client: 'A field service company',
     industry: 'logistics-transportation',
     services: ['web-mobile-apps', 'ai-enablement'],
     excerpt:
