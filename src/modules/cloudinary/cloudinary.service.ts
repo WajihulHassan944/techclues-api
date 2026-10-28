@@ -40,6 +40,27 @@ export class CloudinaryService {
     });
   }
 
+  /** Same upload, but returns the extra metadata the media library needs to keep. */
+  async uploadBufferWithMeta(
+    buffer: Buffer,
+    folder = 'techclues/media',
+  ): Promise<{ url: string; publicId: string; width?: number; height?: number; bytes?: number; format?: string }> {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream({ folder }, (error, result) => {
+        if (error || !result) return reject(error ?? new Error('Upload failed'));
+        resolve({
+          url: result.secure_url,
+          publicId: result.public_id,
+          width: result.width,
+          height: result.height,
+          bytes: result.bytes,
+          format: result.format,
+        });
+      });
+      stream.end(buffer);
+    });
+  }
+
   async destroy(publicId: string) {
     await cloudinary.uploader.destroy(publicId);
   }
