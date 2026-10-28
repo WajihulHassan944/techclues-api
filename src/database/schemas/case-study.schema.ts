@@ -33,21 +33,21 @@ export class CaseStudy extends Document {
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
   slug!: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   title!: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   client!: string;
 
   /** Free text, but the admin UI suggests the site's existing industry list for consistency with /industries/*. */
-  @Prop({ required: true })
+  @Prop({ default: '' })
   industry!: string;
 
   /** Service slugs, matching /services/* (e.g. "mvp-development", "ai-enablement"). */
   @Prop({ type: [String], default: [] })
   services!: string[];
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   excerpt!: string;
 
   /** Case study narrative as HTML from the visual editor, same as blog posts. */

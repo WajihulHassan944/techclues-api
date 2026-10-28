@@ -26,10 +26,10 @@ export class BlogPost extends Document {
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
   slug!: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   title!: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   excerpt!: string;
 
   @Prop({ required: true })
@@ -44,7 +44,7 @@ export class BlogPost extends Document {
   @Prop()
   coverAlt?: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   body!: string;
 
   @Prop({ required: true, enum: POST_STATUSES, default: 'draft' })
