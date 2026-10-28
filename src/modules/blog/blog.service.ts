@@ -5,6 +5,7 @@ import { BlogAuthor, BlogCategory, BlogPost, PostStatus } from '../../database/s
 import { slugify } from '../../common/utils/slugify';
 import { ActivityService } from '../activity/activity.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { MediaService } from '../media/media.service';
 
 @Injectable()
 export class BlogService {
@@ -14,6 +15,7 @@ export class BlogService {
     @InjectModel(BlogAuthor.name) private readonly authorModel: Model<BlogAuthor>,
     private readonly activity: ActivityService,
     private readonly cloudinary: CloudinaryService,
+    private readonly media: MediaService,
   ) {}
 
   async uniqueSlug(base: string, excludeId?: string): Promise<string> {
@@ -204,7 +206,9 @@ export class BlogService {
     await this.authorModel.findByIdAndDelete(id);
   }
 
-  async uploadImage(buffer: Buffer) {
-    return this.cloudinary.uploadBuffer(buffer, 'techclues/blog');
+  async uploadImage(buffer: Buffer, filename = 'upload') {
+    const result = await this.cloudinary.uploadBuffer(buffer, 'techclues/blog');
+    await this.media.recordExisting({ url: result.url, publicId: result.publicId, filename }).catch(() => undefined);
+    return result;
   }
 }

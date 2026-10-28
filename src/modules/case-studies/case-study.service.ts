@@ -5,6 +5,7 @@ import { CaseStudy, CaseStudyStatus } from '../../database/schemas/case-study.sc
 import { slugify } from '../../common/utils/slugify';
 import { ActivityService } from '../activity/activity.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { MediaService } from '../media/media.service';
 
 @Injectable()
 export class CaseStudyService {
@@ -12,6 +13,7 @@ export class CaseStudyService {
     @InjectModel(CaseStudy.name) private readonly model: Model<CaseStudy>,
     private readonly activity: ActivityService,
     private readonly cloudinary: CloudinaryService,
+    private readonly media: MediaService,
   ) {}
 
   async uniqueSlug(base: string, excludeId?: string): Promise<string> {
@@ -124,7 +126,9 @@ export class CaseStudyService {
     await this.activity.log('settings', `Deleted case study "${doc.title}"`);
   }
 
-  async uploadImage(buffer: Buffer) {
-    return this.cloudinary.uploadBuffer(buffer, 'techclues/case-studies');
+  async uploadImage(buffer: Buffer, filename = 'upload') {
+    const result = await this.cloudinary.uploadBuffer(buffer, 'techclues/case-studies');
+    await this.media.recordExisting({ url: result.url, publicId: result.publicId, filename }).catch(() => undefined);
+    return result;
   }
 }

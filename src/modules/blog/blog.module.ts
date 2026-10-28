@@ -10,6 +10,7 @@ import {
 } from '../../database/schemas/blog.schema';
 import { ActivityModule } from '../activity/activity.module';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { MediaModule } from '../media/media.module';
 import { BlogService } from './blog.service';
 import { AdminBlogController } from './admin-blog.controller';
 import { PublicBlogController } from './public-blog.controller';
@@ -23,6 +24,7 @@ import { PublicBlogController } from './public-blog.controller';
     ]),
     ActivityModule,
     CloudinaryModule,
+    MediaModule,
   ],
   providers: [BlogService],
   controllers: [AdminBlogController, PublicBlogController],

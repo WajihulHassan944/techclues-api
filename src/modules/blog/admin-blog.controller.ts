@@ -124,6 +124,6 @@ export class AdminBlogController {
   @Post('upload-image')
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
-    return this.blog.uploadImage(file.buffer);
+    return this.blog.uploadImage(file.buffer, file.originalname);
   }
 }

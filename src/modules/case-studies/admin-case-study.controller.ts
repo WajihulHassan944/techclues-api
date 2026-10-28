@@ -68,6 +68,6 @@ export class AdminCaseStudyController {
   @Post('upload-image')
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
-    return this.caseStudies.uploadImage(file.buffer);
+    return this.caseStudies.uploadImage(file.buffer, file.originalname);
   }
 }
