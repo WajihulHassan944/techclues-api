@@ -11,6 +11,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { NewsletterService } from '../newsletter/newsletter.service';
 import { fillTemplate, firstName } from '../../common/constants/defaults';
 import { autoReplyEmail, enquiryAdminEmail, enquiryReplyEmail } from '../email/templates';
+import { TransactionalEmailService } from '../transactional-email/transactional-email.service';
 
 export interface CreatePublicEnquiryInput {
   source: SourceKey;
@@ -40,6 +41,7 @@ export class EnquiriesService {
     private readonly pusher: PusherService,
     private readonly notifications: NotificationsService,
     private readonly newsletter: NewsletterService,
+    private readonly transactionalEmail: TransactionalEmailService,
   ) {}
 
   async createPublic(input: CreatePublicEnquiryInput) {
@@ -88,10 +90,12 @@ export class EnquiriesService {
         (t) => !t.sources || t.sources.includes(input.source),
       );
       if (autoReplyTemplate) {
+        const override = await this.transactionalEmail.getOverride('enquiry-auto-reply');
         const mail = autoReplyEmail(
           firstName(enquiry.name),
           fillTemplate(autoReplyTemplate.body, enquiry.name),
           settings,
+          override,
         );
         await this.email.send({
           to: [{ email: enquiry.email, name: enquiry.name }],

@@ -8,6 +8,7 @@ import { EmailModule } from '../email/email.module';
 import { PusherModule } from '../pusher/pusher.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { NewsletterModule } from '../newsletter/newsletter.module';
+import { TransactionalEmailModule } from '../transactional-email/transactional-email.module';
 import { EnquiriesService } from './enquiries.service';
 import { PublicEnquiriesController } from './public-enquiries.controller';
 import { AdminEnquiriesController } from './admin-enquiries.controller';
@@ -24,6 +25,7 @@ import { AdminEnquiriesController } from './admin-enquiries.controller';
     PusherModule,
     NotificationsModule,
     NewsletterModule,
+    TransactionalEmailModule,
   ],
   providers: [EnquiriesService],
   controllers: [PublicEnquiriesController, AdminEnquiriesController],

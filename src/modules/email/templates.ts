@@ -13,6 +13,14 @@ const COMPANY_NAME = 'TechClues';
 /** Placeholder — replace with the real registered address (flagged in the handover report). */
 const COMPANY_ADDRESS = 'TechClues, 125 Hazelville Road, West Midlands, United Kingdom';
 
+/** Substitutes {{tag}} placeholders in admin-edited copy. Unknown tags are left as-is rather
+ *  than silently dropped, so a typo in the admin panel is visible instead of swallowed. */
+export function mergeTags(text: string, vars: Record<string, string>): string {
+  return text.replace(/\{\{\s*(\w+)\s*\}\}/g, (full, key: string) => (key in vars ? vars[key] : full));
+}
+
+export type EmailCopyOverride = { subject?: string; heading?: string; bodyText?: string };
+
 export function escapeHtml(input: string): string {
   return input
     .replace(/&/g, '&amp;')
@@ -139,14 +147,19 @@ export function autoReplyEmail(
   firstName: string,
   bodyText: string,
   settings: { fromName: string; recipients: string[]; signature: string },
+  override?: EmailCopyOverride,
 ) {
+  const vars = { firstName };
+  const subject = override?.subject ? mergeTags(override.subject, vars) : 'Thanks for getting in touch — TechClues';
+  const heading = override?.heading ? mergeTags(override.heading, vars) : `Thanks, ${firstName}`;
+  const resolvedBodyText = override?.bodyText ? mergeTags(override.bodyText, vars) : bodyText;
   return {
-    subject: 'Thanks for getting in touch — TechClues',
+    subject,
     ...renderEmail({
       previewText: `Thanks, ${firstName} — we'll be in touch soon`,
-      heading: `Thanks, ${firstName}`,
-      bodyHtml: toParagraphsHtml(bodyText),
-      bodyText,
+      heading,
+      bodyHtml: toParagraphsHtml(resolvedBodyText),
+      bodyText: resolvedBodyText,
       signatureText: settings.signature,
       reason: 'you got in touch with us on our website',
     }),
@@ -207,34 +220,43 @@ export function bookingAdminEmail(
   };
 }
 
-/** Visitor-facing booking confirmation / reschedule / cancellation. */
+/** Visitor-facing booking confirmation / reschedule / cancellation. `override` only applies to
+ *  the 'confirmed' kind — rescheduled/cancelled always use the built-in copy, since a single
+ *  admin-edited template can't safely stand in for all three without confusing a customer. */
 export function bookingVisitorEmail(
   b: { name: string; start: Date; meetingLink?: string },
   kind: 'confirmed' | 'rescheduled' | 'cancelled',
   settings: { fromName: string; recipients: string[]; signature: string },
   reason?: string,
+  override?: EmailCopyOverride,
 ) {
   const when = b.start.toUTCString();
   const firstName = b.name.split(' ')[0];
-  const heading =
+  const vars = { firstName, when, name: b.name };
+  const defaultHeading =
     kind === 'confirmed'
       ? 'Your call is confirmed'
       : kind === 'rescheduled'
         ? 'Your call has been rescheduled'
         : 'Your call has been cancelled';
-  const bodyText =
+  const defaultBodyText =
     kind === 'confirmed'
       ? `Your call is confirmed for ${when} (UK time).`
       : kind === 'rescheduled'
         ? `Your call has been moved to ${when} (UK time).`
         : `Your call for ${when} has been cancelled.${reason ? ` Reason: ${reason}` : ''}`;
+  const defaultSubject =
+    kind === 'confirmed'
+      ? 'Your call with TechClues is confirmed'
+      : kind === 'rescheduled'
+        ? 'Your TechClues call has been rescheduled'
+        : 'Your TechClues call has been cancelled';
+  const useOverride = kind === 'confirmed' && override;
+  const subject = useOverride && override.subject ? mergeTags(override.subject, vars) : defaultSubject;
+  const heading = useOverride && override.heading ? mergeTags(override.heading, vars) : defaultHeading;
+  const bodyText = useOverride && override.bodyText ? mergeTags(override.bodyText, vars) : defaultBodyText;
   return {
-    subject:
-      kind === 'confirmed'
-        ? 'Your call with TechClues is confirmed'
-        : kind === 'rescheduled'
-          ? 'Your TechClues call has been rescheduled'
-          : 'Your TechClues call has been cancelled',
+    subject,
     ...renderEmail({
       previewText: bodyText,
       heading,
@@ -255,14 +277,19 @@ export function newsletterWelcomeEmail(
   email: string,
   unsubscribeToken: string,
   settings: { fromName: string; recipients: string[]; signature: string },
+  override?: EmailCopyOverride,
 ) {
-  const bodyText =
+  const vars = { email };
+  const defaultBodyText =
     "Thanks for subscribing to the TechClues newsletter. We'll send you occasional updates — no spam, unsubscribe any time.";
+  const subject = override?.subject ? mergeTags(override.subject, vars) : "You're subscribed to the TechClues newsletter";
+  const heading = override?.heading ? mergeTags(override.heading, vars) : 'Welcome aboard';
+  const bodyText = override?.bodyText ? mergeTags(override.bodyText, vars) : defaultBodyText;
   return {
-    subject: "You're subscribed to the TechClues newsletter",
+    subject,
     ...renderEmail({
       previewText: bodyText,
-      heading: 'Welcome aboard',
+      heading,
       bodyHtml: toParagraphsHtml(bodyText),
       bodyText,
       signatureText: settings.signature,

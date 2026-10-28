@@ -15,6 +15,7 @@ import {
   newsletterWelcomeEmail,
   subscriberAdminEmail,
 } from '../email/templates';
+import { TransactionalEmailService } from '../transactional-email/transactional-email.service';
 
 /** Ported verbatim from the frontend's `lib/admin/newsletter.ts`. */
 export const EMAIL_RE = /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/;
@@ -42,6 +43,7 @@ export class NewsletterService {
     private readonly pusher: PusherService,
     private readonly settings: SettingsService,
     private readonly notifications: NotificationsService,
+    private readonly transactionalEmail: TransactionalEmailService,
   ) {}
 
   /** Mirrors the frontend's `add(email,name,source) -> error string | ""`. */
@@ -88,7 +90,8 @@ export class NewsletterService {
         textContent: mail.text,
       });
     }
-    const welcome = newsletterWelcomeEmail(normalized, unsubscribeToken, settings);
+    const welcomeOverride = await this.transactionalEmail.getOverride('newsletter-welcome');
+    const welcome = newsletterWelcomeEmail(normalized, unsubscribeToken, settings, welcomeOverride);
     await this.email.send({
       to: [{ email: normalized, name }],
       subject: welcome.subject,

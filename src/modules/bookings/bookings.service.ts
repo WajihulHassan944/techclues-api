@@ -12,6 +12,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { NewsletterService } from '../newsletter/newsletter.service';
 import { buildBookingIcs } from '../../common/utils/ics';
 import { bookingAdminEmail, bookingVisitorEmail } from '../email/templates';
+import { TransactionalEmailService } from '../transactional-email/transactional-email.service';
 
 @Injectable()
 export class BookingsService {
@@ -24,6 +25,7 @@ export class BookingsService {
     private readonly pusher: PusherService,
     private readonly notifications: NotificationsService,
     private readonly newsletter: NewsletterService,
+    private readonly transactionalEmail: TransactionalEmailService,
   ) {}
 
   async getAvailability(): Promise<Availability> {
@@ -169,7 +171,8 @@ export class BookingsService {
         attendeeEmail: booking.email,
         attendeeName: booking.name,
       });
-      const mail = bookingVisitorEmail(booking, 'confirmed', settings);
+      const bookingOverride = await this.transactionalEmail.getOverride('booking-confirmed');
+      const mail = bookingVisitorEmail(booking, 'confirmed', settings, undefined, bookingOverride);
       await this.email.send({
         to: [{ email: booking.email, name: booking.name }],
         subject: mail.subject,
