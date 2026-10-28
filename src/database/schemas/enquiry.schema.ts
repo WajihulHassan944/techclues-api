@@ -13,6 +13,7 @@ export const SOURCE_KEYS = [
   'chat',
   'staff-augmentation',
   'game-development',
+  'ai-enablement',
 ] as const;
 export type SourceKey = (typeof SOURCE_KEYS)[number];
 

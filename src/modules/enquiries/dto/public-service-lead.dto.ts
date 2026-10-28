@@ -12,6 +12,12 @@ export const GAME_NEEDS = [
   'In production, need capacity',
   'Live title, need live ops',
 ] as const;
+export const AI_NEEDS = [
+  'Not sure where to start',
+  'Have a specific workflow to automate',
+  'Already built something, needs work',
+  'Want an AI feature added to our product',
+] as const;
 
 /** Shared shape of the "tell us what you need" lead forms on the service pages. */
 class ServiceLeadBase {
@@ -36,4 +42,8 @@ export class PublicStaffAugmentationDto extends ServiceLeadBase {
 
 export class PublicGameDevelopmentDto extends ServiceLeadBase {
   @IsIn(GAME_NEEDS as unknown as string[]) need!: string;
+}
+
+export class PublicAiEnablementDto extends ServiceLeadBase {
+  @IsIn(AI_NEEDS as unknown as string[]) need!: string;
 }

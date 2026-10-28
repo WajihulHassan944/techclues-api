@@ -11,6 +11,7 @@ import { PublicPartnerDto } from './dto/public-partner.dto';
 import { PublicCareersDto } from './dto/public-careers.dto';
 import { PublicChatDto } from './dto/public-chat.dto';
 import {
+  PublicAiEnablementDto,
   PublicGameDevelopmentDto,
   PublicStaffAugmentationDto,
 } from './dto/public-service-lead.dto';
@@ -225,6 +226,29 @@ export class PublicEnquiriesController {
       message: dto.brief || `Stage: ${dto.need}.`,
       details: toDetails({
         stage: dto.need,
+        marketingConsent: dto.marketingConsent ? 'yes' : 'no',
+      }),
+      ip: req.ip,
+      referrer: req.headers.referer,
+    });
+    return { id: String(enquiry._id) };
+  }
+
+  @Post('ai-enablement')
+  async aiEnablement(@Body() dto: PublicAiEnablementDto, @Req() req: Request) {
+    checkHoneypot(dto.website);
+    const name = `${dto.firstName} ${dto.lastName}`.trim();
+    const enquiry = await this.enquiries.createPublic({
+      source: 'ai-enablement',
+      marketingConsent: dto.marketingConsent,
+      name,
+      email: dto.email,
+      company: dto.company,
+      phone: dto.phone ? `${dto.phoneCode ?? ''} ${dto.phone}`.trim() : undefined,
+      subject: `AI integration & automation: ${dto.need} (${name})`,
+      message: dto.brief || `Looking for: ${dto.need}.`,
+      details: toDetails({
+        need: dto.need,
         marketingConsent: dto.marketingConsent ? 'yes' : 'no',
       }),
       ip: req.ip,
