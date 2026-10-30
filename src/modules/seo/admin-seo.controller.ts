@@ -1,13 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { Feature } from '../auth/feature.decorator';
 import { SeoService } from './seo.service';
 import { CreateRedirectDto, UpdateRedirectDto, UpsertSeoEntryDto } from './dto/seo.dto';
 import { CreateBacklinkDto, UpdateBacklinkDto } from './dto/backlink.dto';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'seo_manager')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@Feature('seo')
 @Controller('admin/seo')
 export class AdminSeoController {
   constructor(private readonly seo: SeoService) {}

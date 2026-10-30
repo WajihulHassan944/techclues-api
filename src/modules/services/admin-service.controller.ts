@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { Feature } from '../auth/feature.decorator';
 import { ServiceService } from './service.service';
 import { ReorderServicesDto, UpdateServiceDto } from './dto/service.dto';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'editor')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@Feature('services')
 @Controller('admin/services')
 export class AdminServiceController {
   constructor(private readonly services: ServiceService) {}

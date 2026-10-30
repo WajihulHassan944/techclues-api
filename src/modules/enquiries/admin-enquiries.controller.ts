@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { Feature } from '../auth/feature.decorator';
 import { EnquiriesService } from './enquiries.service';
 import {
   AddNoteDto,
@@ -15,8 +15,8 @@ import {
 } from './dto/admin-inbox.dto';
 import { Folder, StatusKey } from '../../database/schemas/enquiry.schema';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'staff')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@Feature('inbox')
 @Controller('admin/inbox')
 export class AdminEnquiriesController {
   constructor(private readonly enquiries: EnquiriesService) {}

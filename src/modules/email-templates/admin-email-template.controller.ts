@@ -2,11 +2,13 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/roles.decorator';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { Feature } from '../auth/feature.decorator';
 import { EmailTemplateService } from './email-template.service';
 import { CreateEmailTemplateDto, UpdateEmailTemplateDto } from './dto/email-template.dto';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'editor')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@Feature('email-templates')
 @Controller('admin/email-templates')
 export class AdminEmailTemplateController {
   constructor(private readonly templates: EmailTemplateService) {}

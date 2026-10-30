@@ -1,14 +1,14 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { Feature } from '../auth/feature.decorator';
 import { CurrentUser, AuthUser } from '../auth/current-user.decorator';
 import { MediaService } from './media.service';
 import { UpdateMediaAssetDto } from './dto/media.dto';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'editor')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@Feature('media')
 @Controller('admin/media')
 export class AdminMediaController {
   constructor(private readonly media: MediaService) {}

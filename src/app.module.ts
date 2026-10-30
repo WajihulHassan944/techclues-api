@@ -33,6 +33,7 @@ import { PrivacyModule } from './modules/privacy/privacy.module';
 import { CronModule } from './modules/cron/cron.module';
 import { SearchModule } from './modules/search/search.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { RolePermissionsModule } from './modules/role-permissions/role-permissions.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     }),
     HealthModule,
     AuthModule,
+    RolePermissionsModule,
     ActivityModule,
     SettingsModule,
     EnquiriesModule,

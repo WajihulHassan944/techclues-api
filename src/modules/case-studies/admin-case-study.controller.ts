@@ -13,14 +13,14 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { Feature } from '../auth/feature.decorator';
 import { CaseStudyService } from './case-study.service';
 import { CreateCaseStudyDto, UpdateCaseStudyDto } from './dto/case-study.dto';
 import { CaseStudyStatus } from '../../database/schemas/case-study.schema';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'editor')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@Feature('case-studies')
 @Controller('admin/case-studies')
 export class AdminCaseStudyController {
   constructor(private readonly caseStudies: CaseStudyService) {}

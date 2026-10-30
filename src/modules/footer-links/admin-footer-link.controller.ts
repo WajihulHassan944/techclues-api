@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { Feature } from '../auth/feature.decorator';
 import { FooterLinkService } from './footer-link.service';
 import {
   CreateFooterLinkDto,
@@ -9,8 +9,8 @@ import {
   UpdateFooterLinkDto,
 } from './dto/footer-link.dto';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'editor')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@Feature('footer-links')
 @Controller('admin/footer-links')
 export class AdminFooterLinkController {
   constructor(private readonly links: FooterLinkService) {}

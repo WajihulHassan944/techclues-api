@@ -11,8 +11,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { Feature } from '../auth/feature.decorator';
 import { NewsletterService } from './newsletter.service';
 import {
   AddManySubscribersDto,
@@ -23,8 +23,8 @@ import {
 } from './dto/admin-newsletter.dto';
 import { SUB_SOURCES, SubStatus } from '../../database/schemas/subscriber.schema';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('super_admin', 'admin', 'editor')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@Feature('newsletter')
 @Controller('admin/newsletter')
 export class AdminNewsletterController {
   constructor(private readonly newsletter: NewsletterService) {}
