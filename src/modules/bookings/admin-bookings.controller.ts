@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { BookingsService } from './bookings.service';
 import {
   AddBookingNoteDto,
@@ -13,7 +15,8 @@ import {
 } from './dto/admin-booking.dto';
 import { BookingStatus } from '../../database/schemas/booking.schema';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('super_admin', 'admin', 'staff')
 @Controller('admin/bookings')
 export class AdminBookingsController {
   constructor(private readonly bookings: BookingsService) {}

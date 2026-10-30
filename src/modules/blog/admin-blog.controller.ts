@@ -13,6 +13,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { BlogService } from './blog.service';
 import {
   CreateAuthorDto,
@@ -22,7 +24,8 @@ import {
 } from './dto/blog-post.dto';
 import { PostStatus } from '../../database/schemas/blog.schema';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('super_admin', 'admin', 'editor')
 @Controller('admin/blog')
 export class AdminBlogController {
   constructor(private readonly blog: BlogService) {}

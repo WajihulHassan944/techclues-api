@@ -1,9 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { FaqService } from './faq.service';
 import { CreateFaqDto, ReorderFaqDto, UpdateFaqDto } from './dto/faq.dto';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('super_admin', 'admin', 'editor')
 @Controller('admin/faqs')
 export class AdminFaqController {
   constructor(private readonly faqs: FaqService) {}

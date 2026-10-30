@@ -1,12 +1,15 @@
 import { Controller, Delete, Get, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { EnquiriesService } from '../enquiries/enquiries.service';
 import { BookingsService } from '../bookings/bookings.service';
 import { NewsletterService } from '../newsletter/newsletter.service';
 import { ActivityService } from '../activity/activity.service';
 import { EmailService } from '../email/email.service';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('super_admin', 'admin')
 @Controller('admin/privacy')
 export class PrivacyController {
   constructor(

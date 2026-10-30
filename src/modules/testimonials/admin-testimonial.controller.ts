@@ -1,9 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 import { TestimonialService } from './testimonial.service';
 import { CreateTestimonialDto, ReorderTestimonialsDto, UpdateTestimonialDto } from './dto/testimonial.dto';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('super_admin', 'admin', 'editor')
 @Controller('admin/testimonials')
 export class AdminTestimonialController {
   constructor(private readonly testimonials: TestimonialService) {}
